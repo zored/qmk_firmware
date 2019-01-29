@@ -42,6 +42,12 @@
     keyboard_report->mods == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT)) \
 )
 
+#define IS31FL3235A_COUNT 1
+//#define I2C_DRIVER I2CD1
+#define I2C1_BANK GPIOB
+#define I2C1_SCL 8
+#define I2C1_SDA 9
+
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.

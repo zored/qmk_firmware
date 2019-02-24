@@ -1,16 +1,8 @@
 # Quantum Mechanical Keyboard Firmware
 ## Zored edition
 See specific documentation for [zored Ergodox EZ keymap](keyboards/ergodox_ez/keymaps/zored/README.md).
-
-## Build
 ```bash
-./util/docker_build.sh ergodox_ez:zored
-```
-
-## Sync with new changes
-```bash
-git remote add target git@github.com:qmk/qmk_firmware.git;
-git merge target master
+./zored.sh [build|sync]
 ```
 
 [![Current Version](https://img.shields.io/github/tag/qmk/qmk_firmware.svg)](https://github.com/qmk/qmk_firmware/tags)

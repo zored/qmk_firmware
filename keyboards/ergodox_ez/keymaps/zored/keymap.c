@@ -32,7 +32,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,        
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,        
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  KC_QUOT,        
-        KC_HYPR,        KC_N,           KC_M,           RGUI_T(KC_PCMM),RALT_T(KC_PDOT),RCTL_T(KC_SLSH),KC_RSPC,        
+        KC_HYPR,        KC_N,           KC_M,           KC_PCMM,        KC_PDOT,        RCTL_T(KC_SLSH),KC_RSPC,        
         KC_BSLS,        KC_GRV,         KC_DOWN,        KC_UP,          TG(3),          
         KC_ESC,         _______,        
         KC_PGUP,        
@@ -140,43 +140,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
-
-    uint8_t layer = biton32(state);
-
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-    ergodox_right_led_3_off();
-    switch (layer) {
-      case 1:
-        ergodox_right_led_1_on();
-        break;
-      case 2:
-        ergodox_right_led_2_on();
-        break;
-      case 3:
-        ergodox_right_led_3_on();
-        break;
-      case 4:
-        ergodox_right_led_1_on();
-        ergodox_right_led_2_on();
-        break;
-      case 5:
-        ergodox_right_led_1_on();
-        ergodox_right_led_3_on();
-        break;
-      case 6:
-        ergodox_right_led_2_on();
-        ergodox_right_led_3_on();
-        break;
-      case 7:
-        ergodox_right_led_1_on();
-        ergodox_right_led_2_on();
-        ergodox_right_led_3_on();
-        break;
-      default:
-        break;
-    }
+    ergodox_board_led_off(); 
     return state;
-
 };

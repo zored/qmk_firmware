@@ -1,6 +1,8 @@
 #!/bin/sh
 # NOTE: This script uses tabs for indentation
 
+set -ex
+
 USAGE="Usage: $0 [keyboard[:keymap[:target]]]"
 
 # Check preconditions
@@ -45,7 +47,7 @@ if [ -n "$target" ]; then
 fi
 
 dir=$DIR || dir=$(pwd -W 2>/dev/null) || dir=$PWD  # Use Windows path if on Windows
-cmd=$cmd || cmd="make $keyboard${keymap:+:$keymap}${target:+:$target}"
+[[ $cmd = '' ]] && cmd="make $keyboard${keymap:+:$keymap}${target:+:$target}"
 
 # Run container and build firmware
 docker run --rm -it $usb_args -v "$dir":/qmk_firmware qmkfm/qmk_firmware $cmd

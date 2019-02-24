@@ -10,14 +10,24 @@
 #define LCGS(code) LCTL(LGUI(LSFT(code)))
 #define LCS(code) LCTL(LSFT(code))
 
+enum unicode_names {
+    E_LOL,
+    E_JOY,
+};
+
+const uint32_t PROGMEM unicode_map[] = {
+    [E_LOL] 0x1F60A, // 😊
+    [E_JOY] 0x1F602, // 😂
+};
+
 enum custom_keycodes {
   PLACEHOLDER = SAFE_RANGE,      // can always be here
   EPRM,           
   RGB_SLD,        
-  
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+  // DEFAULT
   [0] = LAYOUT_ergodox(
     // left hand
     KC_ESC,         KC_F1,          KC_F2,          KC_F3,          KC_F4,          KC_F5,          KC_F6,          
@@ -32,7 +42,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,        
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,        
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  KC_QUOT,        
-        KC_HYPR,        KC_N,           KC_M,           KC_PCMM,        KC_PDOT,        RCTL_T(KC_SLSH),KC_RSPC,        
+        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),KC_RSPC,        
         KC_BSLS,        KC_GRV,         KC_DOWN,        KC_UP,          TG(3),          
         KC_ESC,         _______,        
         KC_PGUP,        
@@ -40,6 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 
+  // SYMBOLS
   [1] = LAYOUT_ergodox(
     // left hand
     _______,        _______,        _______,        _______,        _______,        _______,        _______,        
@@ -61,10 +72,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,        _______,        _______
     ),
 
-
+  // NAVIGATION
   [2] = LAYOUT_ergodox(
     // left hand
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
+    _______,        X(E_LOL),       X(E_JOY),       _______,        _______,        _______,        _______,        
     _______,        _______,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,        
     _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,        
     _______,        _______,        _______,        _______,        _______,        _______,        _______,        
@@ -73,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,        
                                                                     _______,        _______,        _______,        
         // right hand
-        _______,        KC_PWR,         KC_SLEP,        _______,        _______,        _______,        _______,        
+        _______,        KC_PWR,         KC_SLEP,        UC_M_WC,        UC_M_OS,        _______,        _______,        
         _______,        _______,        KC_ACL0,        KC_ACL1,        KC_ACL2,        _______,        _______,        
                         KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        
         _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,        
@@ -84,6 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 
+  // PLOVER
   [3] = LAYOUT_ergodox(
     // left hand
     _______,        _______,        _______,        _______,        _______,        _______,        _______,        
@@ -141,5 +153,41 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 uint32_t layer_state_set_user(uint32_t state) {
     ergodox_board_led_off(); 
+    uint8_t layer = biton32(state);
+
+    ergodox_board_led_off();
+    ergodox_right_led_1_off();
+    ergodox_right_led_2_off();
+    ergodox_right_led_3_off();
+    switch (layer) {
+      case 1:
+        ergodox_right_led_1_on();
+        break;
+      case 2:
+        ergodox_right_led_2_on();
+        break;
+      case 3:
+        ergodox_right_led_3_on();
+        break;
+      case 4:
+        ergodox_right_led_1_on();
+        ergodox_right_led_2_on();
+        break;
+      case 5:
+        ergodox_right_led_1_on();
+        ergodox_right_led_3_on();
+        break;
+      case 6:
+        ergodox_right_led_2_on();
+        ergodox_right_led_3_on();
+        break;
+      case 7:
+        ergodox_right_led_1_on();
+        ergodox_right_led_2_on();
+        ergodox_right_led_3_on();
+        break;
+      default:
+        break;
+    }
     return state;
 };

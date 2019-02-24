@@ -3,7 +3,7 @@ set -ex
 
 case $1 in
  build-win|build)
-  rm *.hex
+  rm *.hex || true
   DIR=/$PWD ./util/docker_build.sh ergodox_ez:zored
  ;;
 

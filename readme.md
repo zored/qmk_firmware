@@ -1,6 +1,7 @@
 # Quantum Mechanical Keyboard Firmware
 ## Zored edition
-See specific documentation for [zored Ergodox EZ keymap](keyboards/ergodox_ez/keymaps/zored/README.md).
+- See specific documentation for [zored Ergodox EZ keymap](keyboards/ergodox_ez/keymaps/zored/README.md).
+- [Keymap is here](keyboards/ergodox_ez/keymaps/zored/keymap.c#L28).
 ```bash
 ./zored.sh [build|sync]
 ```

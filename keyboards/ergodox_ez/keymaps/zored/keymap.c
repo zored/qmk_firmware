@@ -10,9 +10,21 @@
 #define LCGS(code) LCTL(LGUI(LSFT(code)))
 #define LCS(code) LCTL(LSFT(code))
 
+#define SLT(kc) (QK_LSFT | QK_LALT | (kc))
+#define ALT_TAB LALT(KC_TAB)
+#define SLT_TAB SLT(KC_TAB)
+
 enum unicode_names {
     E_LOL,
     E_JOY,
+};
+
+
+enum layouts {
+    L_DEF,
+    L_SYM,
+    L_NAV,
+    L_PLO,
 };
 
 const uint32_t PROGMEM unicode_map[] = {
@@ -77,8 +89,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // left hand
     _______,        X(E_LOL),       X(E_JOY),       _______,        _______,        _______,        _______,        
     _______,        _______,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,        
-    _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
+    _______,        ALT_TAB,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,        
+    _______,        SLT_TAB,        _______,        _______,        _______,        _______,        _______,        
     _______,        _______,        _______,        KC_BTN1,        KC_BTN2,        
                                                                                     _______,        _______,        
                                                                                                     _______,        
@@ -161,30 +173,30 @@ uint32_t layer_state_set_user(uint32_t state) {
     ergodox_right_led_3_off();
     switch (layer) {
       case 1:
-        ergodox_right_led_1_on();
+        // ergodox_right_led_1_on();
         break;
       case 2:
-        ergodox_right_led_2_on();
+        // ergodox_right_led_2_on();
         break;
       case 3:
         ergodox_right_led_3_on();
         break;
       case 4:
-        ergodox_right_led_1_on();
-        ergodox_right_led_2_on();
+        // ergodox_right_led_1_on();
+        // ergodox_right_led_2_on();
         break;
       case 5:
-        ergodox_right_led_1_on();
-        ergodox_right_led_3_on();
+        // ergodox_right_led_1_on();
+        // ergodox_right_led_3_on();
         break;
       case 6:
-        ergodox_right_led_2_on();
-        ergodox_right_led_3_on();
+        // ergodox_right_led_2_on();
+        // ergodox_right_led_3_on();
         break;
       case 7:
-        ergodox_right_led_1_on();
-        ergodox_right_led_2_on();
-        ergodox_right_led_3_on();
+        // ergodox_right_led_1_on();
+        // ergodox_right_led_2_on();
+        // ergodox_right_led_3_on();
         break;
       default:
         break;

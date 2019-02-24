@@ -10,3 +10,9 @@ Differences from basic EZ config:
 - For fast touch-typing (no distracting lights, low timeouts).
 
 See [keymap](./keymap.c) for details.
+
+## TODO
+- Uncomfortable `_`.
+- Kill app button.
+- Simpler alt-tab.
+- Unicode and language layout.

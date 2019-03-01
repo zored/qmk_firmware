@@ -4,6 +4,8 @@ set -ex
 case $1 in
  build-win|build)
   rm *.hex || true
+  docker-machine start || true
+  eval $(docker-machine env) || true
   DIR=/$PWD ./util/docker_build.sh ergodox_ez:zored
  ;;
 

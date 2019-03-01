@@ -19,9 +19,16 @@ case $1 in
   teensy=/d/zored/downloads/teensy_loader_cli.exe
   # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
   # unzip $_ -d .
-  echo
-  echo PRESS RESET BUTTON ON YOUR ERGODOX
-  echo
+  cat <<TEXT
+
+===========
+
+ENTER BOOTLOADER ON YOUR ERGODOX
+- Either push a little button on top-right.
+- Or hold SPACE + B on reconnect.
+
+TEXT
+
   $teensy -mmcu=atmega32u4 -w ergodox_ez_zored.hex
  ;;
 

@@ -37,7 +37,7 @@ const uint32_t PROGMEM unicode_map[] = {
 };
 
 enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE,      // can always be here
+  PLACEHOLDER = SAFE_RANGE,
   EPRM,           
   RGB_SLD,        
 };
@@ -51,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     C_S_T(XXXXXXX),   LCA_T(XXXXXXX),KC_DLR,        KC_LEFT,        KC_RGHT,        
                                                                                     KC_ESC,         _______,        
                                                                                                     KC_HOME,        
-                                                                    KC_SPC,         KC_BSPC,        KC_END, 
+                                                                    KC_SPC,         KC_BSPC,        KC_END,
         KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,        
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,        
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  LT(L_EMO, KC_QUOT),        
@@ -94,7 +94,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,        _______,        KC_ACL0,        KC_ACL1,        KC_ACL2,        _______,        _______,        
                         KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        
         _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,        
-        KC_VOLU,        KC_VOLD,        KC_MUTE,        _______,        _______,        
+        KC_VOLD,        KC_VOLU,        KC_MUTE,        _______,        _______,        
         _______,        _______,        
         _______,        
         _______,        _______,        _______

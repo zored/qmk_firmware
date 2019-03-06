@@ -42,13 +42,98 @@ enum custom_keycodes {
   RGB_SLD,        
 };
 
+enum dance_state_values {
+  DANCE_Z = 1,
+  DANCE_Y,
+  DANCE_CTRL,
+  DANCE_CTRL_SHIFT,
+};
+
+enum dance_keys {
+  DNC_Z = 0
+};
+
+static int dance_state = 0;
+
+
+void on_each_dance (qk_tap_dance_state_t *state, void *user_data) {
+    // - Faster first hold.
+    // - Slower second taps.
+}
+
+void on_dance (qk_tap_dance_state_t *state, void *user_data) {
+    switch (state->count) {
+        case 1:
+            if (state->interrupted) {
+                register_code(KC_Z);
+                dance_state = DANCE_Z;
+                return;
+            }
+
+            if (state->pressed) {
+                register_code(KC_LCTRL);
+                dance_state = DANCE_CTRL;
+                return;
+            }
+
+            register_code(KC_Z);
+            dance_state = DANCE_Z;
+            return;
+        case 2:
+            if (state->interrupted) {
+                register_code(KC_Y);
+                dance_state = DANCE_Y;
+                return;
+            }
+
+            if (state->pressed) {
+                register_code(KC_LCTRL);
+                register_code(KC_LSHIFT);
+                dance_state = DANCE_CTRL_SHIFT;
+                return;
+            }
+
+            register_code(KC_Z);
+            unregister_code(KC_Z);
+            register_code(KC_Z);
+            dance_state = DANCE_Z;
+            return;
+    }
+}
+
+void on_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
+    switch (dance_state) {
+        case DANCE_CTRL:
+            unregister_code(KC_LCTRL);
+            break;
+
+        case DANCE_Z:
+            unregister_code(KC_Z);
+            break;
+
+        case DANCE_Y:
+            unregister_code(KC_Y);
+            break;
+
+        case DANCE_CTRL_SHIFT:
+            unregister_code(KC_LSHIFT);
+            unregister_code(KC_LCTRL);
+            break;
+    }
+    dance_state = 0;
+}
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+  [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_each_dance, on_dance, on_dance_reset, 170)
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
     KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,          
     KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,        
     LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,           
-    KC_LSPO,          CTL_T(KC_Z),   ALT_T(KC_X),   GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,         
-    C_S_T(XXXXXXX),   LCA_T(XXXXXXX),KC_DLR,        KC_LEFT,        KC_RGHT,        
+    KC_LSPO,          TD(DNC_Z),     ALT_T(KC_X),   GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,         
+    KC_LCTRL,         KC_LALT,       KC_DLR,        KC_LEFT,        KC_RGHT,        
                                                                                     KC_ESC,         _______,        
                                                                                                     KC_HOME,        
                                                                     KC_SPC,         KC_BSPC,        KC_END,
@@ -56,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,        
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  LT(L_EMO, KC_QUOT),        
         KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),KC_RSPC,        
-        KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(3),          
+        KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(L_PLO),          
         KC_ESC,         _______,        
         KC_PGUP,        
         KC_PGDN,        KC_TAB,         KC_ENT
@@ -91,7 +176,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,        
                                                                     _______,        _______,        _______,        
         _______,        KC_PWR,         KC_SLEP,        UC_M_WC,        UC_M_OS,        _______,        _______,        
-        _______,        _______,        KC_ACL0,        KC_ACL1,        KC_ACL2,        _______,        _______,        
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
                         KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        
         _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,        
         KC_VOLD,        KC_VOLU,        KC_MUTE,        _______,        _______,        

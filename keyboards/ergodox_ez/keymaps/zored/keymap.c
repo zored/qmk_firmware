@@ -21,19 +21,20 @@
 #define L_EMO 4
 
 enum unicode_names {
-    E_LOL,
-    E_JOY,
-    E_THI,
-    E_THU,
-    E_BIC,
+  E_LOL,
+  E_JOY,
+  E_THI,
+  E_THU,
+  E_BIC,
 };
 
-const uint32_t PROGMEM unicode_map[] = {
-    [E_LOL] 0x1F60A, // 😊
-    [E_JOY] 0x1F602, // 😂
-    [E_THI] 0x1F914, // 🤔
-    [E_THU] 0x1F44D, // 👍
-    [E_BIC] 0x1F4AA, // 💪
+const uint32_t PROGMEM
+unicode_map[] = {
+  [E_LOL] 0x1F60A, // 😊
+  [E_JOY] 0x1F602, // 😂
+  [E_THI] 0x1F914, // 🤔
+  [E_THU] 0x1F44D, // 👍
+  [E_BIC] 0x1F4AA, // 💪
 };
 
 enum custom_keycodes {
@@ -44,9 +45,6 @@ enum custom_keycodes {
 
 enum dance_state_values {
   DANCE_Z = 1,
-  DANCE_Y,
-  DANCE_F,
-  DANCE_O,
   DANCE_CTRL,
   DANCE_CTRL_SHIFT,
 };
@@ -57,94 +55,71 @@ enum dance_keys {
 
 static int dance_state = 0;
 
-void before_dance_time_check (qk_tap_dance_state_t *state, void *user_data) {
-    // - Faster first hold.
-    if (state->count < 1) {
-        state->custom_tapping_term = TAPPING_TERM;
-        return;
-    }
-
-    // - Slower taps.
-    state->custom_tapping_term = TAPPING_TERM_TAP_DANCE;
-}
-
-bool is_dance_interrupted (qk_tap_dance_state_t *state) {
+bool is_dance_interrupted(qk_tap_dance_state_t *state) {
   return state->interrupted && timer_elapsed(state->timer) < INTERRUPTION_TIMEOUT;
 }
 
-void on_dance (qk_tap_dance_state_t *state, void *user_data) {
-    switch (state->count) {
-        case 1:
-            if (is_dance_interrupted(state)) {
-                register_code(KC_Z);
-                dance_state = DANCE_Z;
-                return;
-            }
+void on_dance(qk_tap_dance_state_t *state, void *user_data) {
+  switch (state->count) {
+    case 1:
+      if (is_dance_interrupted(state)) {
+        register_code(KC_Z);
+        dance_state = DANCE_Z;
+        return;
+      }
 
-            if (state->pressed) {
-                register_code(KC_LCTRL);
-                dance_state = DANCE_CTRL;
-                return;
-            }
+      if (state->pressed) {
+        register_code(KC_LCTRL);
+        dance_state = DANCE_CTRL;
+        return;
+      }
 
-            register_code(KC_Z);
-            dance_state = DANCE_Z;
-            return;
+      register_code(KC_Z);
+      dance_state = DANCE_Z;
+      return;
 
-        case 2:
-            if (is_dance_interrupted(state)) {
-                register_code(KC_Z);
-                dance_state = DANCE_Z;
-                return;
-            }
+    case 2:
+      if (is_dance_interrupted(state)) {
+        register_code(KC_Z);
+        dance_state = DANCE_Z;
+        return;
+      }
 
-            if (state->pressed) {
-                register_code(KC_LCTRL);
-                register_code(KC_LSHIFT);
-                dance_state = DANCE_CTRL_SHIFT;
-                return;
-            }
+      if (state->pressed) {
+        register_code(KC_LCTRL);
+        register_code(KC_LSHIFT);
+        dance_state = DANCE_CTRL_SHIFT;
+        return;
+      }
 
-            register_code(KC_Z);
-            unregister_code(KC_Z);
-            register_code(KC_Z);
-            dance_state = DANCE_Z;
-            return;
-    }
+      register_code(KC_Z);
+      unregister_code(KC_Z);
+      register_code(KC_Z);
+      dance_state = DANCE_Z;
+      return;
+  }
 }
 
-void on_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
-    switch (dance_state) {
-        case DANCE_CTRL:
-            unregister_code(KC_LCTRL);
-            break;
+void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
+  switch (dance_state) {
+    case DANCE_CTRL:
+      unregister_code(KC_LCTRL);
+      break;
 
-        case DANCE_Z:
-            unregister_code(KC_Z);
-            break;
+    case DANCE_Z:
+      unregister_code(KC_Z);
+      break;
 
-        case DANCE_O:
-            unregister_code(KC_O);
-            break;
-
-        case DANCE_F:
-            unregister_code(KC_F);
-            break;
-
-        case DANCE_Y:
-            unregister_code(KC_Y);
-            break;
-
-        case DANCE_CTRL_SHIFT:
-            unregister_code(KC_LSHIFT);
-            unregister_code(KC_LCTRL);
-            break;
-    }
-    dance_state = 0;
+    case DANCE_CTRL_SHIFT:
+      unregister_code(KC_LSHIFT);
+      unregister_code(KC_LCTRL);
+      break;
+  }
+  dance_state = 0;
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME_FN(NULL, on_dance, on_dance_reset, before_dance_time_check)
+    [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -267,21 +242,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool suspended = false;
-const uint16_t PROGMEM fn_actions[] = {
-  [1] = ACTION_LAYER_TAP_TOGGLE(1)
+const uint16_t PROGMEM
+fn_actions[] = {
+[1] = ACTION_LAYER_TAP_TOGGLE(1)
 };
 
 // leaving this in place for compatibilty with old keymaps cloned and re-compiled.
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-      switch(id) {
-        case 0:
-        if (record->event.pressed) {
-          SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
-        }
-        break;
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
+  switch (id) {
+    case 0:
+      if (record->event.pressed) {
+        SEND_STRING(QMK_KEYBOARD
+        "/"
+        QMK_KEYMAP
+        " @ "
+        QMK_VERSION);
       }
-    return MACRO_NONE;
+      break;
+  }
+  return MACRO_NONE;
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -298,42 +277,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
-    ergodox_board_led_off();
-    uint8_t layer = biton32(state);
+  ergodox_board_led_off();
+  uint8_t layer = biton32(state);
 
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-    ergodox_right_led_3_off();
-    switch (layer) {
-      case 1:
-        // ergodox_right_led_1_on();
-        break;
-      case 2:
-        // ergodox_right_led_2_on();
-        break;
-      case 3:
-        ergodox_right_led_3_on();
-        break;
-      case 4:
-        // ergodox_right_led_1_on();
-        // ergodox_right_led_2_on();
-        break;
-      case 5:
-        // ergodox_right_led_1_on();
-        // ergodox_right_led_3_on();
-        break;
-      case 6:
-        // ergodox_right_led_2_on();
-        // ergodox_right_led_3_on();
-        break;
-      case 7:
-        // ergodox_right_led_1_on();
-        // ergodox_right_led_2_on();
-        // ergodox_right_led_3_on();
-        break;
-      default:
-        break;
-    }
-    return state;
+  ergodox_board_led_off();
+  ergodox_right_led_1_off();
+  ergodox_right_led_2_off();
+  ergodox_right_led_3_off();
+  switch (layer) {
+    case 1:
+      // ergodox_right_led_1_on();
+      break;
+    case 2:
+      // ergodox_right_led_2_on();
+      break;
+    case 3:
+      ergodox_right_led_3_on();
+      break;
+    case 4:
+      // ergodox_right_led_1_on();
+      // ergodox_right_led_2_on();
+      break;
+    case 5:
+      // ergodox_right_led_1_on();
+      // ergodox_right_led_3_on();
+      break;
+    case 6:
+      // ergodox_right_led_2_on();
+      // ergodox_right_led_3_on();
+      break;
+    case 7:
+      // ergodox_right_led_1_on();
+      // ergodox_right_led_2_on();
+      // ergodox_right_led_3_on();
+      break;
+    default:
+      break;
+  }
+  return state;
 };

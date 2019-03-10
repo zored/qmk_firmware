@@ -1,6 +1,10 @@
 // https://docs.qmk.fm/#/config_options
 #undef TAPPING_TERM
-#define TAPPING_TERM 120
+#define TAPPING_TERM 130
+
+// Timeout comfortable for tapping key multiple times:
+#undef TAPPING_TERM_TAP_DANCE
+#define TAPPING_TERM_TAP_DANCE 270
 
 #undef MOUSEKEY_MAX_SPEED
 #define MOUSEKEY_MAX_SPEED 10

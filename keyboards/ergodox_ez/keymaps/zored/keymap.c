@@ -38,13 +38,15 @@ const uint32_t PROGMEM unicode_map[] = {
 
 enum custom_keycodes {
   PLACEHOLDER = SAFE_RANGE,
-  EPRM,           
-  RGB_SLD,        
+  EPRM,
+  RGB_SLD,
 };
 
 enum dance_state_values {
   DANCE_Z = 1,
   DANCE_Y,
+  DANCE_F,
+  DANCE_O,
   DANCE_CTRL,
   DANCE_CTRL_SHIFT,
 };
@@ -55,11 +57,18 @@ enum dance_keys {
 
 static int dance_state = 0;
 
-
-void on_each_dance (qk_tap_dance_state_t *state, void *user_data) {
+void before_dance_time_check (qk_tap_dance_state_t *state, void *user_data) {
     // - Faster first hold.
-    // - Slower second taps.
+    if (state->count < 1) {
+        state->custom_tapping_term = TAPPING_TERM;
+        return;
+    }
+
+    // - Slower taps.
+    state->custom_tapping_term = TAPPING_TERM_TAP_DANCE;
 }
+
+
 
 void on_dance (qk_tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
@@ -79,10 +88,11 @@ void on_dance (qk_tap_dance_state_t *state, void *user_data) {
             register_code(KC_Z);
             dance_state = DANCE_Z;
             return;
+
         case 2:
             if (state->interrupted) {
-                register_code(KC_Y);
-                dance_state = DANCE_Y;
+                register_code(KC_Z);
+                dance_state = DANCE_Z;
                 return;
             }
 
@@ -111,6 +121,14 @@ void on_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
             unregister_code(KC_Z);
             break;
 
+        case DANCE_O:
+            unregister_code(KC_O);
+            break;
+
+        case DANCE_F:
+            unregister_code(KC_F);
+            break;
+
         case DANCE_Y:
             unregister_code(KC_Y);
             break;
@@ -124,122 +142,122 @@ void on_dance_reset (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_each_dance, on_dance, on_dance_reset, 170)
+  [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME_FN(NULL, on_dance, on_dance_reset, before_dance_time_check)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
-    KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,          
-    KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,        
-    LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,           
-    KC_LSPO,          TD(DNC_Z),     ALT_T(KC_X),   GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,         
-    KC_LCTRL,         KC_LALT,       KC_DLR,        KC_LEFT,        KC_RGHT,        
-                                                                                    KC_ESC,         _______,        
-                                                                                                    KC_HOME,        
+    KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
+    KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,
+    LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,
+    KC_LSPO,          TD(DNC_Z),     ALT_T(KC_X),   GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,
+    KC_LCTRL,         KC_LALT,       KC_DLR,        KC_LEFT,        KC_RGHT,
+                                                                                    KC_ESC,         _______,
+                                                                                                    KC_HOME,
                                                                     KC_SPC,         KC_BSPC,        KC_END,
-        KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,        
-        _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,        
-                        KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  LT(L_EMO, KC_QUOT),        
-        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),KC_RSPC,        
-        KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(L_PLO),          
-        KC_ESC,         _______,        
-        KC_PGUP,        
+        KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,
+        _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,
+                        KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  LT(L_EMO, KC_QUOT),
+        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),KC_RSPC,
+        KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(L_PLO),
+        KC_ESC,         _______,
+        KC_PGUP,
         KC_PGDN,        KC_TAB,         KC_ENT
     ),
 
   [L_SYM] = LAYOUT_ergodox(
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        KC_EXLM,        KC_AT,          KC_LCBR,        KC_RCBR,        KC_BSLS,        _______,        
-    _______,        KC_HASH,        KC_DLR,         KC_LPRN,        KC_RPRN,        KC_GRV,         
-    _______,        KC_PERC,        KC_CIRC,        KC_LBRC,        KC_RBRC,        KC_TILD,        _______,        
-    _______,        _______,        _______,        _______,        _______,        
-                                                                                    _______,        _______,        
-                                                                                                    _______,        
-                                                                    _______,        KC_DEL,         _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        KC_PPLS,        KC_7,           KC_8,           KC_9,           _______,        KC_PIPE,        
-                        KC_EQL,         KC_4,           KC_5,           KC_6,           KC_PAST,        _______,        
-        _______,        KC_MINS,        KC_1,           KC_2,           KC_3,           KC_AMPR,        _______,        
-        KC_EQL,         KC_0,           KC_DOT,         _______,        _______,        
-        _______,        _______,        
-        _______,        
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        KC_EXLM,        KC_AT,          KC_LCBR,        KC_RCBR,        KC_BSLS,        _______,
+    _______,        KC_HASH,        KC_DLR,         KC_LPRN,        KC_RPRN,        KC_GRV,
+    _______,        KC_PERC,        KC_CIRC,        KC_LBRC,        KC_RBRC,        KC_TILD,        _______,
+    _______,        _______,        _______,        _______,        _______,
+                                                                                    _______,        _______,
+                                                                                                    _______,
+                                                                    _______,        KC_DEL,         _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        KC_PPLS,        KC_7,           KC_8,           KC_9,           _______,        KC_PIPE,
+                        KC_EQL,         KC_4,           KC_5,           KC_6,           KC_PAST,        _______,
+        _______,        KC_MINS,        KC_1,           KC_2,           KC_3,           KC_AMPR,        _______,
+        KC_EQL,         KC_0,           KC_DOT,         _______,        _______,
+        _______,        _______,
+        _______,
         _______,        _______,        _______
     ),
 
   [L_NAV] = LAYOUT_ergodox(
-    _______,        _______,        _______,       _______,        _______,        _______,        _______,        
-    _______,        _______,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,        
-    _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        KC_BTN1,        KC_BTN2,        
-                                                                                    _______,        _______,        
-                                                                                                    _______,        
-                                                                    _______,        _______,        _______,        
-        _______,        KC_PWR,         KC_SLEP,        UC_M_WC,        UC_M_OS,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-                        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        
-        _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,        
-        KC_VOLD,        KC_VOLU,        KC_MUTE,        _______,        _______,        
-        _______,        _______,        
-        _______,        
+    _______,        _______,        _______,       _______,        _______,        _______,        _______,
+    _______,        _______,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,
+    _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        KC_BTN1,        KC_BTN2,
+                                                                                    _______,        _______,
+                                                                                                    _______,
+                                                                    _______,        _______,        _______,
+        _______,        KC_PWR,         KC_SLEP,        UC_M_WC,        UC_M_OS,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+                        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,
+        _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,
+        KC_VOLD,        KC_VOLU,        KC_MUTE,        _______,        _______,
+        _______,        _______,
+        _______,
         _______,        _______,        _______
     ),
 
   [L_PLO] = LAYOUT_ergodox(
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,           
-    _______,        KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           _______,        
-    _______,        _______,        _______,        _______,        _______,        
-                                                                                    _______,        _______,        
-                                                                                                    _______,        
-                                                                    KC_C,           KC_V,           _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-                        KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_LBRC,        
-        _______,        KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,        KC_QUOT,        
-        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        
-        _______,        
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,
+    _______,        KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           _______,
+    _______,        _______,        _______,        _______,        _______,
+                                                                                    _______,        _______,
+                                                                                                    _______,
+                                                                    KC_C,           KC_V,           _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+                        KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_LBRC,
+        _______,        KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,        KC_QUOT,
+        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,
+        _______,
         _______,        KC_N,           KC_M
     ),
 
   [L_EMO] = LAYOUT_ergodox(
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        X(E_LOL),       X(E_JOY),       X(E_THI),       X(E_THU),       X(E_BIC),       _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,           
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        _______,        _______,        
-                                                                                    _______,        _______,        
-                                                                                                    _______,        
-                                                                    _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-                        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        
-        _______,        
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        X(E_LOL),       X(E_JOY),       X(E_THI),       X(E_THU),       X(E_BIC),       _______,
+    _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,
+                                                                                    _______,        _______,
+                                                                                                    _______,
+                                                                    _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+                        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,
+        _______,
         _______,        _______,        _______
     ),
 
   /*
   [4] = LAYOUT_ergodox(
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        _______,        _______,        _______,           
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-    _______,        _______,        _______,        _______,        _______,        
-                                                                                    _______,        _______,        
-                                                                                                    _______,        
-                                                                    _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-                        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        _______,        _______,        _______,        
-        _______,        _______,        
-        _______,        
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,
+                                                                                    _______,        _______,
+                                                                                                    _______,
+                                                                    _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+                        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,
+        _______,
         _______,        _______,        _______
     ),
    */
@@ -278,7 +296,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 uint32_t layer_state_set_user(uint32_t state) {
-    ergodox_board_led_off(); 
+    ergodox_board_led_off();
     uint8_t layer = biton32(state);
 
     ergodox_board_led_off();

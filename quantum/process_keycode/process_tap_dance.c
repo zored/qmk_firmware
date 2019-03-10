@@ -180,16 +180,28 @@ bool process_tap_dance(uint16_t keycode, keyrecord_t *record) {
 void matrix_scan_tap_dance () {
   if (highest_td == -1)
     return;
-  uint16_t tap_user_defined;
+  uint16_t tap_user_defined = 0;
 
   for (uint8_t i = 0; i <= highest_td; i++) {
     qk_tap_dance_action_t *action = &tap_dance_actions[i];
-    if(action->custom_tapping_term > 0 ) {
+    if (action->custom_tapping_term > 0 ) {
+      // Static timeout:
       tap_user_defined = action->custom_tapping_term;
     }
-    else{
+
+    if (action->fn.before_time_check) {
+      // Dynamic timeout:
+      _process_tap_dance_action_fn (&action->state, action->user_data, action->fn.before_time_check);
+      if (action->state.custom_tapping_term > 0) {
+        tap_user_defined = action->state.custom_tapping_term;
+      }
+    }
+
+    if (tap_user_defined <= 0) {
+      // Default timeout:
       tap_user_defined = TAPPING_TERM;
     }
+
     if (action->state.count && timer_elapsed (action->state.timer) > tap_user_defined) {
       process_tap_dance_action_on_dance_finished (action);
       reset_tap_dance (&action->state);

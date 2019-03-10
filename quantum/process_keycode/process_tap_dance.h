@@ -29,6 +29,7 @@ typedef struct
   uint16_t keycode;
   uint16_t interrupting_keycode;
   uint16_t timer;
+  uint16_t custom_tapping_term;
   bool interrupted;
   bool pressed;
   bool finished;
@@ -44,6 +45,7 @@ typedef struct
     qk_tap_dance_user_fn_t on_each_tap;
     qk_tap_dance_user_fn_t on_dance_finished;
     qk_tap_dance_user_fn_t on_reset;
+    qk_tap_dance_user_fn_t before_time_check;
   } fn;
   qk_tap_dance_state_t state;
   uint16_t custom_tapping_term;
@@ -73,19 +75,24 @@ typedef struct
   }
 
 #define ACTION_TAP_DANCE_FN(user_fn) {  \
-    .fn = { NULL, user_fn, NULL }, \
+    .fn = { NULL, user_fn, NULL, NULL }, \
     .user_data = NULL, \
   }
 
 #define ACTION_TAP_DANCE_FN_ADVANCED(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset) { \
-    .fn = { user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset }, \
+    .fn = { user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, NULL }, \
     .user_data = NULL, \
   }
 
 #define ACTION_TAP_DANCE_FN_ADVANCED_TIME(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, tap_specific_tapping_term) { \
-    .fn = { user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset }, \
+    .fn = { user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, NULL }, \
     .user_data = NULL, \
     .custom_tapping_term = tap_specific_tapping_term, \
+  }
+
+#define ACTION_TAP_DANCE_FN_ADVANCED_TIME_FN(user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, user_fn_before_time_check) { \
+    .fn = { user_fn_on_each_tap, user_fn_on_dance_finished, user_fn_on_dance_reset, user_fn_before_time_check }, \
+    .user_data = NULL, \
   }
 
 extern qk_tap_dance_action_t tap_dance_actions[];

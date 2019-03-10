@@ -68,12 +68,14 @@ void before_dance_time_check (qk_tap_dance_state_t *state, void *user_data) {
     state->custom_tapping_term = TAPPING_TERM_TAP_DANCE;
 }
 
-
+bool is_dance_interrupted (qk_tap_dance_state_t *state) {
+  return state->interrupted && timer_elapsed(state->timer) < INTERRUPTION_TIMEOUT;
+}
 
 void on_dance (qk_tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
-            if (state->interrupted) {
+            if (is_dance_interrupted(state)) {
                 register_code(KC_Z);
                 dance_state = DANCE_Z;
                 return;
@@ -90,7 +92,7 @@ void on_dance (qk_tap_dance_state_t *state, void *user_data) {
             return;
 
         case 2:
-            if (state->interrupted) {
+            if (is_dance_interrupted(state)) {
                 register_code(KC_Z);
                 dance_state = DANCE_Z;
                 return;

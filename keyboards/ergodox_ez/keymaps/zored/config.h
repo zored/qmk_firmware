@@ -6,6 +6,10 @@
 #undef TAPPING_TERM_TAP_DANCE
 #define TAPPING_TERM_TAP_DANCE 270
 
+// Timeout for which interruption is taken into account
+#undef INTERRUPTION_TIMEOUT
+#define INTERRUPTION_TIMEOUT 60
+
 #undef MOUSEKEY_MAX_SPEED
 #define MOUSEKEY_MAX_SPEED 10
 

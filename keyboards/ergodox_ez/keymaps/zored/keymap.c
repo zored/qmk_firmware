@@ -23,6 +23,9 @@ enum unicode_names {
   E_THI,
   E_THU,
   E_BIC,
+  E_SMI,
+  E_FIR,
+  E_HEA,
 };
 
 const uint32_t PROGMEM
@@ -32,6 +35,9 @@ unicode_map[] = {
   [E_THI] 0x1F914, // 🤔
   [E_THU] 0x1F44D, // 👍
   [E_BIC] 0x1F4AA, // 💪
+  [E_SMI] 0x1F60F, // 😏
+  [E_FIR] 0x1F525, // 🔥
+  [E_HEA] 0xFE0F, // ❤️
 };
 
 enum custom_keycodes {
@@ -129,10 +135,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_ESC,         _______,
                                                                                                     KC_HOME,
                                                                     KC_SPC,         KC_BSPC,        KC_END,
-        KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,         KC_RBRC,
-        _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(2,KC_P),     KC_LBRC,
-                        KC_H,           KC_J,           KC_K,           KC_L,           LT(2,KC_SCLN),  LT(L_EMO, KC_QUOT),
-        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),KC_RSPC,
+        KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,           KC_RBRC,
+        _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(L_NAV,KC_P),   KC_LBRC,
+                        KC_H,           KC_J,           KC_K,           KC_L,           LT(L_NAV,KC_SCLN),LT(L_EMO, KC_QUOT),
+        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),  KC_RSPC,
         KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(L_PLO),
         KC_ESC,         _______,
         KC_PGUP,
@@ -186,10 +192,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     _______,        _______,
                                                                                                     _______,
                                                                     STN_A,           STN_O,           _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,         STN_NB, 
-                        STN_ST3,        STN_FR,         STN_PR,         STN_LR,         STN_TR,         STN_DR,
-        _______,        STN_ST4,        STN_RR,         STN_BR,         STN_GR,         STN_SR,         STN_ZR,
+        _______,        _______,        _______,        _______,        _______,        _______,         _______,
+        _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,          STN_NB, 
+                        STN_ST3,        STN_FR,         STN_PR,         STN_LR,         LT(L_NAV,STN_TR),STN_DR,
+        _______,        STN_ST4,        STN_RR,         STN_BR,         STN_GR,         STN_SR,          STN_ZR,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
         _______,
@@ -199,7 +205,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_EMO] = LAYOUT_ergodox(
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        X(E_LOL),       X(E_JOY),       X(E_THI),       X(E_THU),       X(E_BIC),       _______,
-    _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        X(E_SMI),       X(E_FIR),       X(E_HEA),       _______,        _______,
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        _______,        _______,        _______,        _______,
                                                                                     _______,        _______,
@@ -272,6 +278,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   return true;
 }
+
 
 void matrix_init_user(void) {
   steno_set_mode(STENO_MODE_GEMINI);

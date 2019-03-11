@@ -2,10 +2,7 @@
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
-#include "keymap_german.h"
-#include "keymap_nordic.h"
-#include "keymap_french.h"
-#include "keymap_spanish.h"
+#include "keymap_steno.h"
 
 #define LCGS(code) LCTL(LGUI(LSFT(code)))
 #define LCS(code) LCTL(LSFT(code))
@@ -182,21 +179,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [L_PLO] = LAYOUT_ergodox(
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,
-    _______,        KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,
-    _______,        KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           _______,
+    _______,        STN_N1,         STN_N2,         STN_N3,         STN_N4,         STN_N5,         _______,
+    _______,        STN_S1,         STN_TL,         STN_PL,         STN_HL,         STN_ST1,
+    _______,        STN_S2,         STN_KL,         STN_WL,         STN_RL,         STN_ST2,           _______,
     _______,        _______,        _______,        _______,        _______,
                                                                                     _______,        _______,
                                                                                                     _______,
-                                                                    KC_C,           KC_V,           _______,
+                                                                    STN_A,           STN_O,           _______,
         _______,        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
-                        KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_LBRC,
-        _______,        KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,        KC_QUOT,
+        _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,         STN_NB, 
+                        STN_ST3,        STN_FR,         STN_PR,         STN_LR,         STN_TR,         STN_DR,
+        _______,        STN_ST4,        STN_RR,         STN_BR,         STN_GR,         STN_SR,         STN_ZR,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
         _______,
-        _______,        KC_N,           KC_M
+        _______,        STN_E,           STN_U
     ),
 
   [L_EMO] = LAYOUT_ergodox(
@@ -274,6 +271,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
   }
   return true;
+}
+
+void matrix_init_user(void) {
+  steno_set_mode(STENO_MODE_GEMINI);
 }
 
 uint32_t layer_state_set_user(uint32_t state) {

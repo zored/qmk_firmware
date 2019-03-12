@@ -40,6 +40,14 @@ unicode_map[] = {
   [E_HEA] 0xFE0F, // ❤️
 };
 
+// Combos:
+const uint16_t PROGMEM
+combo_esc[] = {KC_D, KC_F, KC_J, KC_K, COMBO_END};
+
+combo_t key_combos[COMBO_COUNT] = {
+  COMBO(combo_esc, KC_ESC)
+};
+
 enum custom_keycodes {
   PLACEHOLDER = SAFE_RANGE,
   EPRM,

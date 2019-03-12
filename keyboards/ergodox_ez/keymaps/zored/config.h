@@ -6,6 +6,9 @@
 #undef TAPPING_TERM_TAP_DANCE
 #define TAPPING_TERM_TAP_DANCE 270
 
+#undef COMBO_TERM
+#define COMBO_TERM 130
+
 // Timeout for which interruption is taken into account
 #undef INTERRUPTION_TIMEOUT
 #define INTERRUPTION_TIMEOUT 60
@@ -24,3 +27,5 @@
 
 #define UNICODE_SELECTED_MODES UC_OSX, UC_WINC
 
+#undef COMBO_COUNT
+#define COMBO_COUNT 1

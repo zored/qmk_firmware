@@ -1,5 +1,6 @@
 # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
 BOOTMAGIC_ENABLE = full
+COMBO_ENABLE = yes
 COMMAND_ENABLE = no
 RGBLIGHT_ENABLE = no
 STENO_ENABLE = yes

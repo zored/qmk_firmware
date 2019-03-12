@@ -41,11 +41,49 @@ unicode_map[] = {
 };
 
 // Combos:
-const uint16_t PROGMEM
-combo_esc[] = {KC_D, KC_F, KC_J, KC_K, COMBO_END};
+enum combo_names {
+  CMB_ESC,
+  CMB_RAR,
+  CMB_LAR,
+};
+
+// Unique only!
+const uint16_t PROGMEM combo_esc[] = {KC_Q, KC_P, COMBO_END};
+const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_DOT, COMBO_END};
+const uint16_t PROGMEM combo_left_arrow[] = {KC_M, KC_COMM, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-  COMBO(combo_esc, KC_ESC)
+  [CMB_ESC] = COMBO(combo_esc, KC_ESC),
+  [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
+  [CMB_LAR] = COMBO_ACTION(combo_left_arrow),
+};
+
+
+void process_combo_event(uint8_t combo_index, bool pressed) {
+  switch(combo_index) {
+    case CMB_RAR:
+      if (pressed) {
+        // -
+        tap_code(KC_MINS);
+
+        // >
+        register_code(KC_LSHIFT);
+        tap_code(KC_DOT);
+        unregister_code(KC_LSHIFT);
+      }
+      break;
+    case CMB_LAR:
+      if (pressed) {
+        // -
+        tap_code(KC_MINS);
+
+        // <
+        register_code(KC_LSHIFT);
+        tap_code(KC_COMM);
+        unregister_code(KC_LSHIFT);
+      }
+      break;
+  }
 };
 
 enum custom_keycodes {
@@ -68,6 +106,7 @@ enum dance_keys {
   DNC_X,
 };
 
+// TODO: separate storages.
 static int dance_state = 0;
 
 bool is_holding(qk_tap_dance_state_t *state) {

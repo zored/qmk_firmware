@@ -56,81 +56,139 @@ enum custom_keycodes {
 
 enum dance_state_values {
   DANCE_Z = 1,
+  DANCE_X,
   DANCE_CTRL,
   DANCE_CTRL_SHIFT,
+  DANCE_ALT,
+  DANCE_ALT_SHIFT,
 };
 
 enum dance_keys {
-  DNC_Z = 0
+  DNC_Z = 0,
+  DNC_X,
 };
 
 static int dance_state = 0;
 
-bool is_dance_interrupted(qk_tap_dance_state_t *state) {
-  return state->interrupted && timer_elapsed(state->timer) < INTERRUPTION_TIMEOUT;
+bool is_holding(qk_tap_dance_state_t *state) {
+  if (state->pressed) {
+    return true;
+  }
+
+  // Interrupted in short period of time:
+  if (state->interrupted && timer_elapsed(state->timer) < INTERRUPTION_TIMEOUT) {
+    return true;
+  }
+
+  return false;
+}
+
+void dance_modifier_key(
+  qk_tap_dance_state_t *state,
+  int danceStateTap,
+  int danceStateHold1,
+  int danceStateHold2,
+  uint8_t tapKeycode,
+  uint8_t holdKeycode1,
+  uint8_t holdKeycode2
+) {
+  // Not enough taps:
+  if (state->count < 1) {
+    return;
+  }
+
+  // Register modifiers:
+  if (is_holding(state)) {
+    // First modifier:
+    register_code(holdKeycode1);
+    dance_state = danceStateHold1;
+
+    if (state->count == 1) {
+      return;
+    }
+
+    // Second modifier:
+    register_code(holdKeycode2);
+    dance_state = danceStateHold2;
+    return;
+  }
+
+  // Make previous taps (if needed):
+  for (int i = 1; i < state->count; i++) {
+    register_code(tapKeycode);
+    unregister_code(tapKeycode);
+  }
+
+  // Last tap:
+  register_code(tapKeycode);
+  dance_state = danceStateTap;
 }
 
 void on_dance(qk_tap_dance_state_t *state, void *user_data) {
-  switch (state->count) {
-    case 1:
-      if (is_dance_interrupted(state)) {
-        register_code(KC_Z);
-        dance_state = DANCE_Z;
-        return;
-      }
+  uint16_t danceKey = state->keycode - QK_TAP_DANCE;
 
-      if (state->pressed) {
-        register_code(KC_LCTRL);
-        dance_state = DANCE_CTRL;
-        return;
-      }
+  switch (danceKey) {
+    case DNC_Z:
+      dance_modifier_key(
+        state,
+        DANCE_Z,
+        DANCE_CTRL,
+        DANCE_CTRL_SHIFT,
+        KC_Z,
+        KC_LCTRL,
+        KC_LSHIFT
+      );
+      break;
 
-      register_code(KC_Z);
-      dance_state = DANCE_Z;
-      return;
-
-    case 2:
-      if (is_dance_interrupted(state)) {
-        register_code(KC_Z);
-        dance_state = DANCE_Z;
-        return;
-      }
-
-      if (state->pressed) {
-        register_code(KC_LCTRL);
-        register_code(KC_LSHIFT);
-        dance_state = DANCE_CTRL_SHIFT;
-        return;
-      }
-
-      register_code(KC_Z);
-      unregister_code(KC_Z);
-      register_code(KC_Z);
-      dance_state = DANCE_Z;
-      return;
+    case DNC_X:
+      dance_modifier_key(
+        state,
+        DANCE_X,
+        DANCE_ALT,
+        DANCE_ALT_SHIFT,
+        KC_X,
+        KC_LALT,
+        KC_LSHIFT
+      );
+      break;
   }
 }
 
 void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   switch (dance_state) {
-    case DANCE_CTRL:
-      unregister_code(KC_LCTRL);
-      break;
-
     case DANCE_Z:
       unregister_code(KC_Z);
+      break;
+
+    case DANCE_X:
+      unregister_code(KC_X);
+      break;
+
+    case DANCE_CTRL:
+      unregister_code(KC_LCTRL);
       break;
 
     case DANCE_CTRL_SHIFT:
       unregister_code(KC_LSHIFT);
       unregister_code(KC_LCTRL);
       break;
+
+    case DANCE_ALT:
+      unregister_code(KC_LALT);
+      break;
+
+    case DANCE_ALT_SHIFT:
+      unregister_code(KC_LSHIFT);
+      unregister_code(KC_LALT);
+      break;
   }
   dance_state = 0;
 }
 
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE)
+qk_tap_dance_action_t
+tap_dance_actions[] = {
+    [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_X] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -138,7 +196,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
     KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,
     LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,
-    KC_LSPO,          TD(DNC_Z),     ALT_T(KC_X),   GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,
+    KC_LSPO,          TD(DNC_Z),     TD(DNC_X),     GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,
     KC_LCTRL,         KC_LALT,       KC_DLR,        KC_LEFT,        KC_RGHT,
                                                                                     KC_ESC,         _______,
                                                                                                     KC_HOME,

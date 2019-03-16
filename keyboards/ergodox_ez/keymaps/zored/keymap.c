@@ -104,10 +104,10 @@ enum dance_state_values {
 enum dance_keys {
   DNC_Z = 0,
   DNC_X,
+  DNC_AMOUNT
 };
 
-// TODO: separate storages.
-static int dance_state = 0;
+static int dance_states[DNC_AMOUNT] = {0};
 
 bool is_holding(qk_tap_dance_state_t *state) {
   if (state->pressed) {
@@ -129,7 +129,8 @@ void dance_modifier_key(
   int danceStateHold2,
   uint8_t tapKeycode,
   uint8_t holdKeycode1,
-  uint8_t holdKeycode2
+  uint8_t holdKeycode2,
+  uint16_t danceKey
 ) {
   // Not enough taps:
   if (state->count < 1) {
@@ -140,7 +141,7 @@ void dance_modifier_key(
   if (is_holding(state)) {
     // First modifier:
     register_code(holdKeycode1);
-    dance_state = danceStateHold1;
+    dance_states[danceKey] = danceStateHold1;
 
     if (state->count == 1) {
       return;
@@ -148,7 +149,7 @@ void dance_modifier_key(
 
     // Second modifier:
     register_code(holdKeycode2);
-    dance_state = danceStateHold2;
+    dance_states[danceKey] = danceStateHold2;
     return;
   }
 
@@ -160,7 +161,7 @@ void dance_modifier_key(
 
   // Last tap:
   register_code(tapKeycode);
-  dance_state = danceStateTap;
+  dance_states[danceKey] = danceStateTap;
 }
 
 void on_dance(qk_tap_dance_state_t *state, void *user_data) {
@@ -175,7 +176,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         DANCE_CTRL_SHIFT,
         KC_Z,
         KC_LCTRL,
-        KC_LSHIFT
+        KC_LSHIFT,
+        DNC_Z
       );
       break;
 
@@ -187,41 +189,44 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         DANCE_ALT_SHIFT,
         KC_X,
         KC_LALT,
-        KC_LSHIFT
+        KC_LSHIFT,
+        DNC_X
       );
       break;
   }
 }
 
 void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
-  switch (dance_state) {
-    case DANCE_Z:
-      unregister_code(KC_Z);
-      break;
+  for (int danceKey = 0; danceKey < DNC_AMOUNT; danceKey++) {
+    switch (dance_states[danceKey]) {
+      case DANCE_Z:
+        unregister_code(KC_Z);
+        break;
 
-    case DANCE_X:
-      unregister_code(KC_X);
-      break;
+      case DANCE_X:
+        unregister_code(KC_X);
+        break;
 
-    case DANCE_CTRL:
-      unregister_code(KC_LCTRL);
-      break;
+      case DANCE_CTRL:
+        unregister_code(KC_LCTRL);
+        break;
 
-    case DANCE_CTRL_SHIFT:
-      unregister_code(KC_LSHIFT);
-      unregister_code(KC_LCTRL);
-      break;
+      case DANCE_CTRL_SHIFT:
+        unregister_code(KC_LSHIFT);
+        unregister_code(KC_LCTRL);
+        break;
 
-    case DANCE_ALT:
-      unregister_code(KC_LALT);
-      break;
+      case DANCE_ALT:
+        unregister_code(KC_LALT);
+        break;
 
-    case DANCE_ALT_SHIFT:
-      unregister_code(KC_LSHIFT);
-      unregister_code(KC_LALT);
-      break;
+      case DANCE_ALT_SHIFT:
+        unregister_code(KC_LSHIFT);
+        unregister_code(KC_LALT);
+        break;
+    }
+    dance_states[danceKey] = 0;
   }
-  dance_state = 0;
 }
 
 qk_tap_dance_action_t
@@ -298,7 +303,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,
                                                                     STN_A,           STN_O,           _______,
         _______,        _______,        _______,        _______,        _______,        _______,         _______,
-        _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,          STN_NB, 
+        _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,          STN_NB,
                         STN_ST3,        STN_FR,         STN_PR,         STN_LR,         LT(L_NAV,STN_TR),STN_DR,
         _______,        STN_ST4,        STN_RR,         STN_BR,         STN_GR,         STN_SR,          STN_ZR,
         _______,        _______,        _______,        _______,        _______,

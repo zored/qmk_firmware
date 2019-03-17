@@ -26,6 +26,7 @@ case $1 in
 ENTER BOOTLOADER ON YOUR ERGODOX
 - Either push a little button on top-right.
 - Or hold SPACE + B on reconnect.
+- Press Bootloader button (`ZKC_BTL`)
 
 TEXT
 

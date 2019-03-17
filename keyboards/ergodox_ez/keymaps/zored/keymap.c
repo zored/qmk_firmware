@@ -13,9 +13,9 @@
 
 enum layers {
   L_DEF = 0,
+  L_PLO,
   L_SYM,
   L_NAV,
-  L_PLO,
   L_EMO,
 };
 
@@ -76,10 +76,6 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       unregister_code(KC_LSHIFT);
       break;
   }
-};
-
-enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE
 };
 
 enum dance_state_values {
@@ -224,6 +220,10 @@ tap_dance_actions[] = {
     [DNC_X] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
 };
 
+enum custom_keycodes {
+  ZKC_BTL = SAFE_RANGE
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
     KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
@@ -310,7 +310,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     _______,        _______,
                                                                                                     _______,
                                                                     _______,        _______,        _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        ZKC_BTL,        _______,        _______,        _______,        _______,        _______,        _______,
         _______,        _______,        _______,        _______,        _______,        _______,        _______,
                         _______,        _______,        _______,        _______,        _______,        _______,
         _______,        _______,        _______,        _______,        _______,        _______,        _______,
@@ -353,6 +353,23 @@ void dim_leds(void) {
   ergodox_right_led_2_off();
   ergodox_right_led_3_off();
 }
+
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  bool complete = false;
+
+  switch (keycode) {
+    case ZKC_BTL:
+      if (record->event.pressed) {
+        clear_keyboard();
+        bootloader_jump();
+        complete = true;
+      }
+      break;
+  }
+
+  return !complete;
+};
 
 uint32_t layer_state_set_user(uint32_t state) {
   dim_leds();

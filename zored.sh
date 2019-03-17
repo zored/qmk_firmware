@@ -11,7 +11,7 @@ case $1 in
 
  sync)
   git remote add target git@github.com:qmk/qmk_firmware.git || true
-  git fetch target
+  git fetch target master:master
   git merge target/master
  ;;
 

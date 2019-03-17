@@ -50,7 +50,7 @@ enum combo_names {
 
 // Unique only!
 const uint16_t PROGMEM combo_esc[] = {KC_S, KC_L, COMBO_END};
-const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_DOT, COMBO_END};
+const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
   [CMB_ESC] = COMBO_ACTION(combo_esc),
@@ -81,15 +81,34 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 enum dance_state_values {
   DANCE_Z = 1,
   DANCE_X,
-  DANCE_CTRL,
-  DANCE_CTRL_SHIFT,
-  DANCE_ALT,
-  DANCE_ALT_SHIFT,
+  DANCE_C,
+  DANCE_SLSH,
+  DANCE_DOT,
+  DANCE_COMM,
+  // Left:
+  DANCE_LEFT_CTRL,
+  DANCE_LEFT_CTRL_SHIFT,
+  DANCE_LEFT_ALT,
+  DANCE_LEFT_ALT_SHIFT,
+  DANCE_LEFT_GUI,
+  DANCE_LEFT_GUI_SHIFT,
+  // Right:
+  DANCE_RIGHT_CTRL,
+  DANCE_RIGHT_CTRL_SHIFT,
+  DANCE_RIGHT_ALT,
+  DANCE_RIGHT_ALT_SHIFT,
+  DANCE_RIGHT_GUI,
+  DANCE_RIGHT_GUI_SHIFT,
 };
 
 enum dance_keys {
   DNC_Z = 0,
   DNC_X,
+  DNC_C,
+  DNC_SLSH,
+  DNC_DOT,
+  DNC_COMM,
+  // Last:
   DNC_AMOUNT
 };
 
@@ -157,8 +176,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
       dance_modifier_key(
         state,
         DANCE_Z,
-        DANCE_CTRL,
-        DANCE_CTRL_SHIFT,
+        DANCE_LEFT_CTRL,
+        DANCE_LEFT_CTRL_SHIFT,
         KC_Z,
         KC_LCTRL,
         KC_LSHIFT,
@@ -170,12 +189,64 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
       dance_modifier_key(
         state,
         DANCE_X,
-        DANCE_ALT,
-        DANCE_ALT_SHIFT,
+        DANCE_LEFT_ALT,
+        DANCE_LEFT_ALT_SHIFT,
         KC_X,
         KC_LALT,
         KC_LSHIFT,
         DNC_X
+      );
+      break;
+
+    case DNC_C:
+      dance_modifier_key(
+        state,
+        DANCE_C,
+        DANCE_LEFT_GUI,
+        DANCE_LEFT_GUI_SHIFT,
+        KC_C,
+        KC_LGUI,
+        KC_LSHIFT,
+        DNC_C
+      );
+      break;
+
+    case DNC_SLSH:
+      dance_modifier_key(
+        state,
+        DANCE_SLSH,
+        DANCE_RIGHT_CTRL,
+        DANCE_RIGHT_CTRL_SHIFT,
+        KC_SLSH,
+        KC_RCTRL,
+        KC_RSHIFT,
+        DNC_SLSH
+      );
+      break;
+
+    case DNC_DOT:
+      dance_modifier_key(
+        state,
+        DANCE_DOT,
+        DANCE_RIGHT_ALT,
+        DANCE_RIGHT_ALT_SHIFT,
+        KC_DOT,
+        KC_RALT,
+        KC_RSHIFT,
+        DNC_DOT
+      );
+      break;
+
+    case DNC_COMM:
+      dance_modifier_key(
+        state,
+        DANCE_COMM,
+        DANCE_RIGHT_GUI,
+        DANCE_RIGHT_GUI_SHIFT,
+        KC_COMM,
+        KC_RGUI,
+        KC_RSHIFT,
+        DNC_COMM
       );
       break;
   }
@@ -192,32 +263,92 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
         unregister_code(KC_X);
         break;
 
-      case DANCE_CTRL:
+      case DANCE_C:
+        unregister_code(KC_C);
+        break;
+
+      case DANCE_SLSH:
+        unregister_code(KC_SLSH);
+        break;
+
+      case DANCE_DOT:
+        unregister_code(KC_DOT);
+        break;
+
+      case DANCE_COMM:
+        unregister_code(KC_COMM);
+        break;
+
+      // Left:
+      case DANCE_LEFT_CTRL:
         unregister_code(KC_LCTRL);
         break;
 
-      case DANCE_CTRL_SHIFT:
+      case DANCE_LEFT_CTRL_SHIFT:
         unregister_code(KC_LSHIFT);
         unregister_code(KC_LCTRL);
         break;
 
-      case DANCE_ALT:
+      case DANCE_LEFT_ALT:
         unregister_code(KC_LALT);
         break;
 
-      case DANCE_ALT_SHIFT:
+      case DANCE_LEFT_ALT_SHIFT:
         unregister_code(KC_LSHIFT);
         unregister_code(KC_LALT);
+        break;
+
+      case DANCE_LEFT_GUI:
+        unregister_code(KC_LGUI);
+        break;
+
+      case DANCE_LEFT_GUI_SHIFT:
+        unregister_code(KC_LSHIFT);
+        unregister_code(KC_LGUI);
+        break;
+
+      // Right:
+      case DANCE_RIGHT_CTRL:
+        unregister_code(KC_RCTRL);
+        break;
+
+      case DANCE_RIGHT_CTRL_SHIFT:
+        unregister_code(KC_RSHIFT);
+        unregister_code(KC_RCTRL);
+        break;
+
+      case DANCE_RIGHT_ALT:
+        unregister_code(KC_RALT);
+        break;
+
+      case DANCE_RIGHT_ALT_SHIFT:
+        unregister_code(KC_RSHIFT);
+        unregister_code(KC_RALT);
+        break;
+
+      case DANCE_RIGHT_GUI:
+        unregister_code(KC_RGUI);
+        break;
+
+      case DANCE_RIGHT_GUI_SHIFT:
+        unregister_code(KC_RSHIFT);
+        unregister_code(KC_RGUI);
         break;
     }
     dance_states[danceKey] = 0;
   }
 }
 
-qk_tap_dance_action_t
-tap_dance_actions[] = {
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Left (ctrl - alt - gui)
     [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
     [DNC_X] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_C] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+
+    // Right: (ctrl - alt - gui)
+    [DNC_SLSH] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_COMM] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
 };
 
 enum custom_keycodes {
@@ -229,7 +360,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
     KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,
     LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,
-    KC_LSPO,          TD(DNC_Z),     TD(DNC_X),     GUI_T(KC_C),    KC_V,           KC_B,           KC_MEH,
+    KC_LSPO,          TD(DNC_Z),     TD(DNC_X),     TD(DNC_C),      KC_V,           KC_B,           KC_MEH,
     KC_LCTRL,         KC_LALT,       KC_DLR,        KC_LEFT,        KC_RGHT,
                                                                                     KC_ESC,         _______,
                                                                                                     KC_HOME,
@@ -237,13 +368,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,           KC_RBRC,
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(L_NAV,KC_P),   KC_LBRC,
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(L_NAV,KC_SCLN),LT(L_EMO, KC_QUOT),
-        KC_HYPR,        KC_N,           KC_M,           KC_COMM,        KC_DOT,         RCTL_T(KC_SLSH),  KC_RSPC,
+        KC_HYPR,        KC_N,           KC_M,           TD(DNC_COMM),   TD(DNC_DOT),    TD(DNC_SLSH),     KC_RSPC,
         KC_DOWN,        KC_UP,          KC_BSLS,        KC_GRV,         TG(L_PLO),
         KC_ESC,         _______,
         KC_PGUP,
         KC_PGDN,        KC_TAB,         KC_ENT
     ),
-
+ 
   [L_SYM] = LAYOUT_ergodox(
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        KC_EXLM,        KC_AT,          KC_LCBR,        KC_RCBR,        KC_BSLS,        _______,
@@ -265,7 +396,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [L_NAV] = LAYOUT_ergodox(
     _______,        _______,        _______,       _______,        _______,        _______,        _______,
-    _______,        _______,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,
+    _______,        KC_MENU,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,
     _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        _______,        _______,        KC_BTN1,        KC_BTN2,
@@ -273,7 +404,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,
                                                                     _______,        _______,        _______,
         _______,        KC_PWR,         KC_SLEP,        UC_M_WC,        UC_M_OS,        _______,        _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        KC_BRID,        KC_BRIU,        _______,        _______,        _______,
                         KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,
         _______,        KC_WH_L,        KC_WH_D,        KC_WH_U,        KC_WH_R,        _______,        _______,
         KC_VOLD,        KC_VOLU,        KC_MUTE,        _______,        _______,

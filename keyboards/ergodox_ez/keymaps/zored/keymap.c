@@ -293,7 +293,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                     STN_A,           STN_O,           _______,
         _______,        _______,        _______,        _______,        _______,        _______,         _______,
         _______,        STN_N6,         STN_N7,         STN_N8,         STN_N9,         STN_NA,          STN_NB,
-                        STN_ST3,        STN_FR,         STN_PR,         STN_LR,         LT(L_NAV,STN_TR),STN_DR,
+                        STN_ST3,        STN_FR,         STN_PR,         STN_LR,         LT(L_NAV,STN_TR),LT(L_EMO, STN_DR),
         _______,        STN_ST4,        STN_RR,         STN_BR,         STN_GR,         STN_SR,          STN_ZR,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
@@ -353,7 +353,6 @@ void dim_leds(void) {
   ergodox_right_led_2_off();
   ergodox_right_led_3_off();
 }
-
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool complete = false;

@@ -19,7 +19,7 @@ case $1 in
   teensy=/d/zored/downloads/teensy_loader_cli.exe
   # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
   # unzip $_ -d .
-  cat <<TEXT
+  cat <<'TEXT'
 
 ===========
 

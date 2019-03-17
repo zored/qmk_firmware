@@ -11,14 +11,16 @@
 #define ALT_TAB LALT(KC_TAB)
 #define SLT_TAB SLT(KC_TAB)
 
-#define L_DEF 0
-#define L_SYM 1
-#define L_NAV 2
-#define L_PLO 3
-#define L_EMO 4
+enum layers {
+  L_DEF = 0,
+  L_SYM,
+  L_NAV,
+  L_PLO,
+  L_EMO,
+};
 
 enum unicode_names {
-  E_LOL,
+  E_LOL = 0,
   E_JOY,
   E_THI,
   E_THU,
@@ -44,52 +46,40 @@ unicode_map[] = {
 enum combo_names {
   CMB_ESC,
   CMB_RAR,
-  CMB_LAR,
 };
 
 // Unique only!
-const uint16_t PROGMEM combo_esc[] = {KC_Q, KC_P, COMBO_END};
+const uint16_t PROGMEM combo_esc[] = {KC_S, KC_L, COMBO_END};
 const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_DOT, COMBO_END};
-const uint16_t PROGMEM combo_left_arrow[] = {KC_M, KC_COMM, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-  [CMB_ESC] = COMBO(combo_esc, KC_ESC),
+  [CMB_ESC] = COMBO_ACTION(combo_esc),
   [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
-  [CMB_LAR] = COMBO_ACTION(combo_left_arrow),
 };
 
-
 void process_combo_event(uint8_t combo_index, bool pressed) {
+  if (!pressed) {
+    return;
+  }
+
   switch(combo_index) {
-    case CMB_RAR:
-      if (pressed) {
-        // -
-        tap_code(KC_MINS);
-
-        // >
-        register_code(KC_LSHIFT);
-        tap_code(KC_DOT);
-        unregister_code(KC_LSHIFT);
-      }
+    case CMB_ESC:
+      tap_code(KC_ESC);
       break;
-    case CMB_LAR:
-      if (pressed) {
-        // -
-        tap_code(KC_MINS);
 
-        // <
-        register_code(KC_LSHIFT);
-        tap_code(KC_COMM);
-        unregister_code(KC_LSHIFT);
-      }
+    case CMB_RAR:
+      tap_code(KC_MINUS);
+
+      // >
+      register_code(KC_LSHIFT);
+      tap_code(KC_DOT);
+      unregister_code(KC_LSHIFT);
       break;
   }
 };
 
 enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE,
-  EPRM,
-  RGB_SLD,
+  PLACEHOLDER = SAFE_RANGE
 };
 
 enum dance_state_values {
@@ -155,8 +145,7 @@ void dance_modifier_key(
 
   // Make previous taps (if needed):
   for (int i = 1; i < state->count; i++) {
-    register_code(tapKeycode);
-    unregister_code(tapKeycode);
+    tap_code(tapKeycode);
   }
 
   // Last tap:
@@ -354,83 +343,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-bool suspended = false;
-const uint16_t PROGMEM
-fn_actions[] = {
-[1] = ACTION_LAYER_TAP_TOGGLE(1)
-};
-
-// leaving this in place for compatibilty with old keymaps cloned and re-compiled.
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
-  switch (id) {
-    case 0:
-      if (record->event.pressed) {
-        SEND_STRING(QMK_KEYBOARD
-        "/"
-        QMK_KEYMAP
-        " @ "
-        QMK_VERSION);
-      }
-      break;
-  }
-  return MACRO_NONE;
-};
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    // dynamically generate these.
-    case EPRM:
-      if (record->event.pressed) {
-        eeconfig_init();
-      }
-      return false;
-      break;
-  }
-  return true;
-}
-
-
 void matrix_init_user(void) {
   steno_set_mode(STENO_MODE_GEMINI);
 }
 
-uint32_t layer_state_set_user(uint32_t state) {
-  ergodox_board_led_off();
-  uint8_t layer = biton32(state);
-
+void dim_leds(void) {
   ergodox_board_led_off();
   ergodox_right_led_1_off();
   ergodox_right_led_2_off();
   ergodox_right_led_3_off();
-  switch (layer) {
-    case 1:
-      // ergodox_right_led_1_on();
-      break;
-    case 2:
-      // ergodox_right_led_2_on();
-      break;
-    case 3:
+}
+
+uint32_t layer_state_set_user(uint32_t state) {
+  dim_leds();
+
+  switch (biton32(state)) {
+    case L_PLO:
       ergodox_right_led_3_on();
       break;
-    case 4:
-      // ergodox_right_led_1_on();
-      // ergodox_right_led_2_on();
-      break;
-    case 5:
-      // ergodox_right_led_1_on();
-      // ergodox_right_led_3_on();
-      break;
-    case 6:
-      // ergodox_right_led_2_on();
-      // ergodox_right_led_3_on();
-      break;
-    case 7:
-      // ergodox_right_led_1_on();
-      // ergodox_right_led_2_on();
-      // ergodox_right_led_3_on();
-      break;
-    default:
-      break;
   }
+
   return state;
 };

@@ -40,6 +40,9 @@ enum unicode_names {
   E_SMI,
   E_FIR,
   E_HEA,
+  E_CRY,
+  E_SOB,
+  E_DNC,
 };
 
 const uint32_t PROGMEM
@@ -51,7 +54,10 @@ unicode_map[] = {
   [E_BIC] 0x1F4AA, // 💪
   [E_SMI] 0x1F60F, // 😏
   [E_FIR] 0x1F525, // 🔥
-  [E_HEA] 0xFE0F, // ❤️
+  [E_HEA] 0x1F496, // 💖
+  [E_CRY] 0x1F622, // 😢
+  [E_SOB] 0x1F62D, // 😭
+  [E_DNC] 0x1F57A, // 🕺
 };
 
 // Combos:
@@ -505,8 +511,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_EMO] = LAYOUT_ergodox(
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        X(E_LOL),       X(E_JOY),       X(E_THI),       X(E_THU),       X(E_BIC),       _______,
-    _______,        X(E_SMI),       X(E_FIR),       X(E_HEA),       _______,        _______,
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        X(E_SMI),       X(E_FIR),       X(E_HEA),       X(E_CRY),       X(E_SOB),
+    _______,        X(E_DNC),        _______,        _______,        _______,        _______,        _______,
     _______,        _______,        _______,        _______,        _______,
                                                                                     _______,        _______,
                                                                                                     _______,

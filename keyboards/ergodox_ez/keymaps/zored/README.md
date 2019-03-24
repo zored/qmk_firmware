@@ -13,9 +13,7 @@ Differences from basic EZ config:
 
 **See [keymap](./keymap.c)** for details.
 
-## TODO
-- Problem with consequent `^C, ^V`.
-- Problem with slow repeatitive `^Z`.
+## TODO  
 - Refactor tap dance.
 - CapsLock tap dance with shift.
 - Simplify F-keys.s

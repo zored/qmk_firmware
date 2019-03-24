@@ -29,3 +29,5 @@
 
 #undef COMBO_COUNT
 #define COMBO_COUNT 2
+
+#define FORCE_NKRO

@@ -1,5 +1,4 @@
 # QMK Ergodox EX Zored keymap
-
 Differences from basic EZ config:
 - Shorten finger movement:
 	- Letters-modifiers (`z` is `ctrl` for example).
@@ -8,10 +7,18 @@ Differences from basic EZ config:
 - [Plover](http://www.openstenoproject.org/) layer.
 - Easy to access symbols for programming.
 - For fast touch-typing (no distracting lights, low timeouts).
+- **Modifier dance** for `Z`, `X`, `C` or `/`, `.`, `,`: 
+	- Hold for `Ctrl`, `Alt`, `GUI` (Command or Windows key).
+	- Double hold to add Shift.
 
-See [keymap](./keymap.c) for details.
+**See [keymap](./keymap.c)** for details.
 
 ## TODO
+- Problem with consequent `^C, ^V`.
+- Problem with slow repeatitive `^Z`.
+- Refactor tap dance.
+- CapsLock tap dance with shift.
+- Simplify F-keys.s
 - Uncomfortable `_`.
 - Kill app button.
 - Simpler alt-tab.

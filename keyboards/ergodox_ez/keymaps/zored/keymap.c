@@ -43,18 +43,28 @@ unicode_map[] = {
 };
 
 // Combos:
-enum combo_names {
-  CMB_ESC,
-  CMB_RAR,
-};
-
-// Unique only!
-const uint16_t PROGMEM combo_esc[] = {KC_S, KC_L, COMBO_END};
+// - Unique only!
+// - Don't forget to update COMBO_COUNT.
+const uint16_t PROGMEM combo_esc[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
+const uint16_t PROGMEM combo_underscore[] = {KC_H, KC_J, COMBO_END};
+const uint16_t PROGMEM combo_quit[] = {KC_I, KC_O, COMBO_END};
+const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
+
+enum combo_names {
+  CMB_ESC = 0,
+  CMB_RAR,
+  CMB_UND,
+  CMB_QUI,
+  CMB_BSLS,
+};
 
 combo_t key_combos[COMBO_COUNT] = {
   [CMB_ESC] = COMBO_ACTION(combo_esc),
   [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
+  [CMB_UND] = COMBO_ACTION(combo_underscore),
+  [CMB_QUI] = COMBO_ACTION(combo_quit),
+  [CMB_BSLS] = COMBO_ACTION(combo_backslash),
 };
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
@@ -74,6 +84,24 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       register_code(KC_LSHIFT);
       tap_code(KC_DOT);
       unregister_code(KC_LSHIFT);
+      break;
+
+    case CMB_UND:
+      // _
+      register_code(KC_LSHIFT);
+      tap_code(KC_MINUS);
+      unregister_code(KC_LSHIFT);
+      break;
+
+    case CMB_QUI:
+      // alt+f4
+      register_code(KC_LALT);
+      tap_code(KC_F4);
+      unregister_code(KC_LALT);
+      break;
+
+    case CMB_BSLS:
+      tap_code(KC_BSLS);
       break;
   }
 };

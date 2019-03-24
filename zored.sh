@@ -1,21 +1,32 @@
 #/usr/bin/env bash
 set -ex
 
+version=$(git describe --dirty)
+hex=${version}.hex
+[[ -e $hex ]] && exists='exists' || exists='does not exist'
+
+cat <<TEXT
+
+Current HEX file is: $hex
+($exists)
+
+TEXT
+
 case $1 in
- build-win|build)
-  rm *.hex || true
+ build|b)
   docker-machine start || true
   eval $(docker-machine env) || true
   DIR=/$PWD ./util/docker_build.sh ergodox_ez:zored
+  mv ergodox_ez_zored.hex $hex
  ;;
 
- sync)
+ sync|s)
   git remote add target git@github.com:qmk/qmk_firmware.git || true
   git fetch target master:master
   git merge target/master
  ;;
 
- flash)
+ flash|f)
   teensy=/d/zored/downloads/teensy_loader_cli.exe
   # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
   # unzip $_ -d .
@@ -30,10 +41,10 @@ ENTER BOOTLOADER ON YOUR ERGODOX
 
 TEXT
 
-  $teensy -mmcu=atmega32u4 -w ergodox_ez_zored.hex
+  $teensy -mmcu=atmega32u4 -w $hex
  ;;
 
- bf)
+ build-and-flash|bf)
   $0 build
   $0 flash
  ;;

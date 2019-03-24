@@ -11,13 +11,25 @@
 #define ALT_TAB LALT(KC_TAB)
 #define SLT_TAB SLT(KC_TAB)
 
-enum layers {
-  L_DEF = 0,
-  L_PLO,
-  L_SYM,
-  L_NAV,
-  L_EMO,
+enum operating_systems {
+  OS_MACOS = 1,
+  OS_WINDOWS,
 };
+
+// Get operating system. Windows is default.
+uint8_t get_os (void) {
+  switch (get_unicode_input_mode()) {
+    case UC_OSX:
+      return OS_MACOS;
+
+    case UC_WIN:
+    case UC_WINC:
+      return OS_WINDOWS;
+  }
+
+  return OS_WINDOWS;
+}
+
 
 enum unicode_names {
   E_LOL = 0,
@@ -94,10 +106,21 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       break;
 
     case CMB_QUI:
-      // alt+f4
-      register_code(KC_LALT);
-      tap_code(KC_F4);
-      unregister_code(KC_LALT);
+      switch (get_os()) {
+        case OS_WINDOWS:
+          // alt+f4
+          register_code(KC_LALT);
+          tap_code(KC_F4);
+          unregister_code(KC_LALT);
+          break;
+
+        case OS_MACOS:
+          // cmd+q
+          register_code(KC_LCMD);
+          tap_code(KC_Q);
+          unregister_code(KC_LCMD);
+          break;
+      }
       break;
 
     case CMB_BSLS:
@@ -369,6 +392,14 @@ enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE
 };
 
+enum layers {
+  L_DEF = 0,
+  L_PLO,
+  L_SYM,
+  L_NAV,
+  L_EMO,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
     KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
@@ -456,9 +487,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,
                                                                     _______,        _______,        _______,
         ZKC_BTL,        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
-                        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        _______,        _______,        _______,        _______,        _______,        _______,
+        _______,        _______,        KC_F7,          KC_F8,          KC_F9,          _______,        _______,
+                        _______,        KC_F4,          KC_F5,          KC_F6,          _______,        _______,
+        _______,        _______,        KC_F1,          KC_F2,          KC_F3,          _______,        _______,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
         _______,
@@ -519,6 +550,9 @@ uint32_t layer_state_set_user(uint32_t state) {
   dim_leds();
 
   switch (biton32(state)) {
+    case L_EMO:
+      ergodox_right_led_2_on();
+      break;
     case L_PLO:
       ergodox_right_led_3_on();
       break;

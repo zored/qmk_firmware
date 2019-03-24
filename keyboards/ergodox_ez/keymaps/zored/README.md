@@ -16,8 +16,5 @@ Differences from basic EZ config:
 ## TODO  
 - Refactor tap dance.
 - CapsLock tap dance with shift.
-- Simplify F-keys.s
 - Uncomfortable `_`.
-- Kill app button.
-- Simpler alt-tab.
 - Unicode and language layout.

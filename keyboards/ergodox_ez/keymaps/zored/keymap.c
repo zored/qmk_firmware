@@ -159,6 +159,16 @@ enum dance_keys {
   DNC_SLSH,
   DNC_DOT,
   DNC_COMM,
+  DNC_F1,
+  DNC_F2,
+  DNC_F3,
+  DNC_F4,
+  DNC_F5,
+  DNC_F6,
+  DNC_F7,
+  DNC_F8,
+  DNC_F9,
+  DNC_F10,
   // Last:
   DNC_AMOUNT
 };
@@ -376,16 +386,31 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   dance_states[danceKey] = 0;
 }
 
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE)
+#define DANCE_F(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
+
 qk_tap_dance_action_t tap_dance_actions[] = {
     // Left (ctrl - alt - gui)
-    [DNC_Z] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
-    [DNC_X] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
-    [DNC_C] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_Z] = DANCE_MODIFIER(),
+    [DNC_X] = DANCE_MODIFIER(),
+    [DNC_C] = DANCE_MODIFIER(),
 
     // Right: (ctrl - alt - gui)
-    [DNC_SLSH] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
-    [DNC_DOT] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
-    [DNC_COMM] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE),
+    [DNC_SLSH] = DANCE_MODIFIER(),
+    [DNC_DOT] = DANCE_MODIFIER(),
+    [DNC_COMM] = DANCE_MODIFIER(),
+
+    // F-dance:
+    [DNC_F1] = DANCE_F(KC_F1, KC_F11),
+    [DNC_F2] = DANCE_F(KC_F2, KC_F12),
+    [DNC_F3] = DANCE_F(KC_F3, KC_F13),
+    [DNC_F4] = DANCE_F(KC_F4, KC_F14),
+    [DNC_F5] = DANCE_F(KC_F5, KC_F15),
+    [DNC_F6] = DANCE_F(KC_F6, KC_F16),
+    [DNC_F7] = DANCE_F(KC_F7, KC_F17),
+    [DNC_F8] = DANCE_F(KC_F8, KC_F18),
+    [DNC_F9] = DANCE_F(KC_F9, KC_F19),
+    [DNC_F10]= DANCE_F(KC_F10,KC_F20),
 };
 
 enum custom_keycodes {
@@ -487,9 +512,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                                     _______,
                                                                     _______,        _______,        _______,
         ZKC_BTL,        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        _______,        KC_F7,          KC_F8,          KC_F9,          _______,        _______,
-                        _______,        KC_F4,          KC_F5,          KC_F6,          _______,        _______,
-        _______,        _______,        KC_F1,          KC_F2,          KC_F3,          _______,        _______,
+        _______,        _______,        TD(DNC_F7),     TD(DNC_F8),     TD(DNC_F9),     TD(DNC_F10),     _______,
+                        _______,        TD(DNC_F4),     TD(DNC_F5),     TD(DNC_F6),      _______,        _______,
+        _______,        _______,        TD(DNC_F1),    TD(DNC_F2),     TD(DNC_F3),      _______,        _______,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
         _______,

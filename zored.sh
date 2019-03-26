@@ -26,12 +26,27 @@ case $1 in
   git merge target/master
  ;;
 
+ teensy|t)
+  mkdir -p vendor/teensy
+  pushd $_
+  git clone https://github.com/zored/teensy_loader_cli . || true
+  git checkout zored || true
+  OS=MACOSX make
+  popd
+ ;;
+
  flash|f)
   mcu='atmega32u4'
-  [[ $(which teensy_loader_cli) ]] && teensy="teensy_loader_cli --mcu=$mcu -v" || teensy="/d/zored/downloads/teensy_loader_cli.exe -mmcu=$mcu"
 
-  # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
-  # unzip $_ -d .
+  teensy_vendor=./vendor/teensy/teensy_loader_cli
+  if [[ -e $teensy_vendor ]]; then
+    teensy="$teensy_vendor --mcu=$mcu -v"
+  else
+    # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
+    # unzip $_ -d .
+    teensy="/d/zored/downloads/teensy_loader_cli.exe -mmcu=$mcu"
+  fi
+
   cat <<'TEXT'
 
 ===========

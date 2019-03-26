@@ -90,6 +90,7 @@ unicode_map[] = {
 // - Don't forget to update COMBO_COUNT.
 const uint16_t PROGMEM combo_esc[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
+const uint16_t PROGMEM combo_fat_right_arrow[] = {KC_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_underscore[] = {KC_H, KC_J, COMBO_END};
 const uint16_t PROGMEM combo_quit[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
@@ -97,16 +98,16 @@ const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
 enum combo_names {
   CMB_ESC = 0,
   CMB_RAR,
+  CMB_FRAR,
   CMB_UND,
   CMB_QUI,
   CMB_BSLS,
 };
 
-__->
-
 combo_t key_combos[COMBO_COUNT] = {
   [CMB_ESC] = COMBO_ACTION(combo_esc),
   [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
+  [CMB_FRAR] = COMBO_ACTION(combo_fat_right_arrow),
   [CMB_UND] = COMBO_ACTION(combo_underscore),
   [CMB_QUI] = COMBO_ACTION(combo_quit),
   [CMB_BSLS] = COMBO_ACTION(combo_backslash),
@@ -120,6 +121,15 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   switch(combo_index) {
     case CMB_ESC:
       tap_code(KC_ESC);
+      break;
+
+    case CMB_FRAR:
+      tap_code(KC_EQL);
+
+      // >
+      register_win_code(KC_LSHIFT);
+      tap_code(KC_DOT);
+      unregister_win_code(KC_LSHIFT);
       break;
 
     case CMB_RAR:
@@ -460,7 +470,7 @@ enum layers {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
-    KC_ESC,           KC_F1,         KC_F2,         KC_F3,          KC_F4,          KC_F5,          KC_F6,
+    KC_ESC,           KC_1,          KC_2,          KC_3,           KC_4,           KC_5,           _______,
     KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,
     LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,
     KC_LSPO,          TD(DNC_Z),     TD(DNC_X),     TD(DNC_C),      KC_V,           KC_B,           KC_MEH,
@@ -468,7 +478,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_ESC,         _______,
                                                                                                     KC_HOME,
                                                                     KC_SPC,         KC_BSPC,        KC_END,
-        KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,         KC_F12,           KC_RBRC,
+        OSL(L_SYM),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,             KC_RBRC,
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(L_NAV,KC_P),   KC_LBRC,
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(L_NAV,KC_SCLN),LT(L_EMO, KC_QUOT),
         KC_HYPR,        KC_N,           KC_M,           TD(DNC_COMM),   TD(DNC_DOT),    TD(DNC_SLSH),     KC_RSPC,

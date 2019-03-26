@@ -27,7 +27,9 @@ case $1 in
  ;;
 
  flash|f)
-  teensy=/d/zored/downloads/teensy_loader_cli.exe
+  mcu='atmega32u4'
+  [[ $(which teensy_loader_cli) ]] && teensy="teensy_loader_cli --mcu=$mcu -v" || teensy="/d/zored/downloads/teensy_loader_cli.exe -mmcu=$mcu"
+
   # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
   # unzip $_ -d .
   cat <<'TEXT'
@@ -41,7 +43,7 @@ ENTER BOOTLOADER ON YOUR ERGODOX
 
 TEXT
 
-  $teensy -mmcu=atmega32u4 -w $hex
+  $teensy -w $hex
  ;;
 
  build-and-flash|bf)

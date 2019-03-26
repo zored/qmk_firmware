@@ -30,6 +30,31 @@ uint8_t get_os (void) {
   return OS_WINDOWS;
 }
 
+uint8_t map_windows_keycode (uint8_t windowsKeycode) {
+  switch (get_os()) {
+    case OS_MACOS:
+      switch (windowsKeycode) {
+        case KC_LCTRL:
+          return KC_LGUI;
+        case KC_RCTRL:
+          return KC_RGUI;
+        case KC_LGUI:
+          return KC_LCTRL;
+        case KC_RGUI:
+          return KC_RCTRL;
+      }
+  }
+
+  return windowsKeycode;
+}
+
+void register_win_code(uint8_t code) {
+  register_code(map_windows_keycode(code));
+}
+
+void unregister_win_code(uint8_t code) {
+  unregister_code(map_windows_keycode(code));
+}
 
 enum unicode_names {
   E_LOL = 0,
@@ -77,6 +102,8 @@ enum combo_names {
   CMB_BSLS,
 };
 
+__->
+
 combo_t key_combos[COMBO_COUNT] = {
   [CMB_ESC] = COMBO_ACTION(combo_esc),
   [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
@@ -99,25 +126,25 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       tap_code(KC_MINUS);
 
       // >
-      register_code(KC_LSHIFT);
+      register_win_code(KC_LSHIFT);
       tap_code(KC_DOT);
-      unregister_code(KC_LSHIFT);
+      unregister_win_code(KC_LSHIFT);
       break;
 
     case CMB_UND:
       // _
-      register_code(KC_LSHIFT);
+      register_win_code(KC_LSHIFT);
       tap_code(KC_MINUS);
-      unregister_code(KC_LSHIFT);
+      unregister_win_code(KC_LSHIFT);
       break;
 
     case CMB_QUI:
       switch (get_os()) {
         case OS_WINDOWS:
           // alt+f4
-          register_code(KC_LALT);
+          register_win_code(KC_LALT);
           tap_code(KC_F4);
-          unregister_code(KC_LALT);
+          unregister_win_code(KC_LALT);
           break;
 
         case OS_MACOS:
@@ -199,7 +226,7 @@ void dance_modifier_key(
   // Register modifiers:
   if (state->pressed) {
     // First modifier:
-    register_code(holdKeycode1);
+    register_win_code(holdKeycode1);
     dance_states[danceKey] = danceStateHold1;
 
     if (state->count == 1) {
@@ -207,7 +234,7 @@ void dance_modifier_key(
     }
 
     // Second modifier:
-    register_code(holdKeycode2);
+    register_win_code(holdKeycode2);
     dance_states[danceKey] = danceStateHold2;
     return;
   }
@@ -218,7 +245,7 @@ void dance_modifier_key(
   }
 
   // Last tap:
-  register_code(tapKeycode);
+  register_win_code(tapKeycode);
   dance_states[danceKey] = danceStateTap;
 }
 
@@ -310,83 +337,83 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   uint16_t danceKey = state->keycode - QK_TAP_DANCE;
   switch (dance_states[danceKey]) {
     case DANCE_Z:
-      unregister_code(KC_Z);
+      unregister_win_code(KC_Z);
       break;
 
     case DANCE_X:
-      unregister_code(KC_X);
+      unregister_win_code(KC_X);
       break;
 
     case DANCE_C:
-      unregister_code(KC_C);
+      unregister_win_code(KC_C);
       break;
 
     case DANCE_SLSH:
-      unregister_code(KC_SLSH);
+      unregister_win_code(KC_SLSH);
       break;
 
     case DANCE_DOT:
-      unregister_code(KC_DOT);
+      unregister_win_code(KC_DOT);
       break;
 
     case DANCE_COMM:
-      unregister_code(KC_COMM);
+      unregister_win_code(KC_COMM);
       break;
 
     // Left:
     case DANCE_LEFT_CTRL:
-      unregister_code(KC_LCTRL);
+      unregister_win_code(KC_LCTRL);
       break;
 
     case DANCE_LEFT_CTRL_SHIFT:
-      unregister_code(KC_LSHIFT);
-      unregister_code(KC_LCTRL);
+      unregister_win_code(KC_LSHIFT);
+      unregister_win_code(KC_LCTRL);
       break;
 
     case DANCE_LEFT_ALT:
-      unregister_code(KC_LALT);
+      unregister_win_code(KC_LALT);
       break;
 
     case DANCE_LEFT_ALT_SHIFT:
-      unregister_code(KC_LSHIFT);
-      unregister_code(KC_LALT);
+      unregister_win_code(KC_LSHIFT);
+      unregister_win_code(KC_LALT);
       break;
 
     case DANCE_LEFT_GUI:
-      unregister_code(KC_LGUI);
+      unregister_win_code(KC_LGUI);
       break;
 
     case DANCE_LEFT_GUI_SHIFT:
-      unregister_code(KC_LSHIFT);
-      unregister_code(KC_LGUI);
+      unregister_win_code(KC_LSHIFT);
+      unregister_win_code(KC_LGUI);
       break;
 
     // Right:
     case DANCE_RIGHT_CTRL:
-      unregister_code(KC_RCTRL);
+      unregister_win_code(KC_RCTRL);
       break;
 
     case DANCE_RIGHT_CTRL_SHIFT:
-      unregister_code(KC_RSHIFT);
-      unregister_code(KC_RCTRL);
+      unregister_win_code(KC_RSHIFT);
+      unregister_win_code(KC_RCTRL);
       break;
 
     case DANCE_RIGHT_ALT:
-      unregister_code(KC_RALT);
+      unregister_win_code(KC_RALT);
       break;
 
     case DANCE_RIGHT_ALT_SHIFT:
-      unregister_code(KC_RSHIFT);
-      unregister_code(KC_RALT);
+      unregister_win_code(KC_RSHIFT);
+      unregister_win_code(KC_RALT);
       break;
 
     case DANCE_RIGHT_GUI:
-      unregister_code(KC_RGUI);
+      unregister_win_code(KC_RGUI);
       break;
 
     case DANCE_RIGHT_GUI_SHIFT:
-      unregister_code(KC_RSHIFT);
-      unregister_code(KC_RGUI);
+      unregister_win_code(KC_RSHIFT);
+      unregister_win_code(KC_RGUI);
       break;
   }
   dance_states[danceKey] = 0;

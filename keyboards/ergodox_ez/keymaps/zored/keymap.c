@@ -68,6 +68,7 @@ enum unicode_names {
   E_CRY,
   E_SOB,
   E_DNC,
+  RU_Q,
 };
 
 const uint32_t PROGMEM
@@ -83,6 +84,7 @@ unicode_map[] = {
   [E_CRY] 0x1F622, // 😢
   [E_SOB] 0x1F62D, // 😭
   [E_DNC] 0x1F57A, // 🕺
+  [RU_Q] 0x430, // а
 };
 
 // Combos:
@@ -479,8 +481,14 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 };
 
 enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE
+  ZKC_BTL = SAFE_RANGE,
+
+  // At the end:
+  DYNAMIC_MACRO_RANGE,
 };
+
+#include "dynamic_macro.h"
+
 
 enum layers {
   L_DEF = 0,
@@ -492,7 +500,7 @@ enum layers {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [L_DEF] = LAYOUT_ergodox(
-    KC_ESC,           TD(DNC_KF1),   TD(DNC_KF2),   TD(DNC_KF3),    TD(DNC_KF4),    TD(DNC_KF5),           _______,
+    KC_ESC,           KC_1,          KC_2,          KC_3,           KC_4,           KC_5,           _______,
     KC_TAB,           KC_Q,          KC_W,          KC_E,           KC_R,           KC_T,           _______,
     LT(L_SYM,KC_CLCK),KC_A,          KC_S,          KC_D,           KC_F,           KC_G,
     KC_LSPO,          TD(DNC_Z),     TD(DNC_X),     TD(DNC_C),      KC_V,           KC_B,           KC_MEH,
@@ -500,7 +508,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_ESC,         _______,
                                                                                                     KC_HOME,
                                                                     KC_SPC,         KC_BSPC,        KC_END,
-        OSL(L_SYM),     TD(DNC_KF6),    TD(DNC_KF7),    TD(DNC_KF8),    TD(DNC_KF9),    TD(DNC_KF10),     KC_RBRC,
+        OSL(L_SYM),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,             KC_RBRC,
         _______,        KC_Y,           KC_U,           KC_I,           KC_O,           LT(L_NAV,KC_P),   KC_LBRC,
                         KC_H,           KC_J,           KC_K,           KC_L,           LT(L_NAV,KC_SCLN),LT(L_EMO, KC_QUOT),
         KC_HYPR,        KC_N,           KC_M,           TD(DNC_COMM),   TD(DNC_DOT),    TD(DNC_SLSH),     KC_RSPC,
@@ -511,7 +519,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
  
   [L_SYM] = LAYOUT_ergodox(
-    _______,        _______,        _______,        _______,        _______,        _______,        _______,
+    _______,        TD(DNC_F1),     TD(DNC_F2),     TD(DNC_F3),     TD(DNC_F4),     TD(DNC_F5),     _______,
     _______,        KC_EXLM,        KC_AT,          KC_LCBR,        KC_RCBR,        KC_BSLS,        _______,
     _______,        KC_HASH,        KC_DLR,         KC_LPRN,        KC_RPRN,        KC_GRV,
     _______,        KC_PERC,        KC_CIRC,        KC_LBRC,        KC_RBRC,        KC_TILD,        _______,
@@ -530,7 +538,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
   [L_NAV] = LAYOUT_ergodox(
-    _______,        _______,        _______,       _______,        _______,        _______,        _______,
+    _______,        TD(DNC_F6),     TD(DNC_F7),     TD(DNC_F8),     TD(DNC_F9),     TD(DNC_F10),    _______,
     _______,        KC_MENU,        KC_BTN2,        KC_MS_U,        KC_BTN1,        _______,        _______,
     _______,        _______,        KC_MS_L,        KC_MS_D,        KC_MS_R,        _______,
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
@@ -571,15 +579,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        X(E_LOL),       X(E_JOY),       X(E_THI),       X(E_THU),       X(E_BIC),       _______,
     _______,        X(E_SMI),       X(E_FIR),       X(E_HEA),       X(E_CRY),       X(E_SOB),
-    _______,        X(E_DNC),        _______,        _______,        _______,        _______,        _______,
+    _______,        _______,        _______,        _______,        _______,        _______,        _______,
     _______,        _______,        _______,        _______,        _______,
                                                                                     _______,        _______,
                                                                                                     _______,
                                                                     _______,        _______,        _______,
-        ZKC_BTL,        _______,        _______,        _______,        _______,        _______,        _______,
-        _______,        _______,        TD(DNC_F7),     TD(DNC_F8),     TD(DNC_F9),     TD(DNC_F10),     _______,
-                        _______,        TD(DNC_F4),     TD(DNC_F5),     TD(DNC_F6),      _______,        _______,
-        _______,        _______,        TD(DNC_F1),    TD(DNC_F2),     TD(DNC_F3),      _______,        _______,
+        ZKC_BTL,        DYN_REC_START1, DYN_REC_START2, DYN_REC_STOP,   DYN_MACRO_PLAY1,DYN_MACRO_PLAY2,_______,
+        _______,        X(RU_Q),        TD(DNC_F7),     TD(DNC_F8),     TD(DNC_F9),     TD(DNC_F10),    _______,
+                        _______,        TD(DNC_F4),     TD(DNC_F5),     TD(DNC_F6),     _______,        _______,
+        _______,        _______,        TD(DNC_F1),     TD(DNC_F2),     TD(DNC_F3),     _______,        _______,
         _______,        _______,        _______,        _______,        _______,
         _______,        _______,
         _______,
@@ -621,6 +629,10 @@ void dim_leds(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (!process_record_dynamic_macro(keycode, record)) {
+    return false;
+  }
+
   bool complete = false;
 
   switch (keycode) {

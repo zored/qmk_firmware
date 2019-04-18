@@ -10,11 +10,10 @@ Differences from basic EZ config:
 - **Modifier dance** for `Z`, `X`, `C` or `/`, `.`, `,`: 
 	- Hold for `Ctrl`, `Alt`, `GUI` (Command or Windows key).
 	- Double hold to add Shift.
+- And many other [features of QMK](https://docs.qmk.fm/#/features).
 
 **See [keymap](./keymap.c)** for details.
 
 ## TODO  
-- Refactor tap dance.
+- Move to C++ or even Rust ([here is repo](https://github.com/zored/alebastr-qmk-whitefox-keymap) for inspiration).
 - CapsLock tap dance with shift.
-- Uncomfortable `_`.
-- Unicode and language layout.

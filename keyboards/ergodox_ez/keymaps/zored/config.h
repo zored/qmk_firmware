@@ -22,8 +22,8 @@
 #undef MOUSEKEY_WHEEL_MAX_SPEED
 #define MOUSEKEY_WHEEL_MAX_SPEED 4
 
-// https://github.com/qmk/qmk_firmware/blob/master/docs/feature_leader_key.md
-// #define LEADER_TIMEOUT 300
+#undef LEADER_TIMEOUT
+#define LEADER_TIMEOUT 300
 
 #define UNICODE_SELECTED_MODES UC_OSX, UC_WINC
 

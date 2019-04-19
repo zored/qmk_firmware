@@ -90,9 +90,14 @@ unicode_map[] = {
 // Combos:
 // - Unique only!
 // - Don't forget to update COMBO_COUNT.
+
+// Left:
+const uint16_t PROGMEM combo_fat_right_arrow[] = {KC_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo_learer_key[] = {KC_R, KC_T, COMBO_END};
+
+// Right:
 const uint16_t PROGMEM combo_esc[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
-const uint16_t PROGMEM combo_fat_right_arrow[] = {KC_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_underscore[] = {KC_H, KC_J, COMBO_END};
 const uint16_t PROGMEM combo_quit[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
@@ -104,6 +109,7 @@ enum combo_names {
   CMB_UND,
   CMB_QUI,
   CMB_BSLS,
+  CMB_LEAD,
 };
 
 combo_t key_combos[COMBO_COUNT] = {
@@ -113,6 +119,7 @@ combo_t key_combos[COMBO_COUNT] = {
   [CMB_UND] = COMBO_ACTION(combo_underscore),
   [CMB_QUI] = COMBO_ACTION(combo_quit),
   [CMB_BSLS] = COMBO_ACTION(combo_backslash),
+  [CMB_LEAD] = COMBO_ACTION(combo_learer_key),
 };
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
@@ -170,6 +177,10 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 
     case CMB_BSLS:
       tap_code(KC_BSLS);
+      break;
+
+    case CMB_LEAD:
+      tap_code(KC_LEAD);
       break;
   }
 };
@@ -670,3 +681,14 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   return state;
 };
+
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    SEQ_ONE_KEY(KC_F) {
+      SEND_STRING("QMK is awesome.");
+    }
+  }
+}

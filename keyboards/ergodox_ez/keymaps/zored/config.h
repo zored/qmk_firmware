@@ -28,6 +28,6 @@
 #define UNICODE_SELECTED_MODES UC_OSX, UC_WINC
 
 #undef COMBO_COUNT
-#define COMBO_COUNT 6
+#define COMBO_COUNT 7
 
 #define FORCE_NKRO

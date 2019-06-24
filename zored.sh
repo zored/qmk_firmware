@@ -23,7 +23,7 @@ case $1 in
  sync|s)
   git remote add target git@github.com:qmk/qmk_firmware.git || true
   git fetch target master:master
-  git merge target/master
+  git rebase target/master
  ;;
 
  teensy|t)

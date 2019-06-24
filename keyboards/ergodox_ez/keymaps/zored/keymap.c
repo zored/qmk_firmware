@@ -180,7 +180,7 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       break;
 
     case CMB_LEAD:
-      tap_code(KC_LEAD);
+      tap_code((uint8_t) KC_LEAD);
       break;
   }
 };

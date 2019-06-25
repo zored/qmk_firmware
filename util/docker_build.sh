@@ -50,4 +50,4 @@ dir=$DIR || dir=$(pwd -W 2>/dev/null) || dir=$PWD  # Use Windows path if on Wind
 [[ $cmd = '' ]] && cmd="make $keyboard${keymap:+:$keymap}${target:+:$target}"
 
 # Run container and build firmware
-docker run --rm -it $usb_args -v "$dir":/qmk_firmware qmkfm/qmk_firmware $cmd
+docker run --rm -i $usb_args -v "$dir":/qmk_firmware qmkfm/qmk_firmware $cmd

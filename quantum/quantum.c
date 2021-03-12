@@ -193,8 +193,9 @@ bool process_record_quantum(keyrecord_t *record) {
 #endif
 
 #ifdef TAP_DANCE_ENABLE
-    preprocess_tap_dance(keycode, record);
-    keycode = get_record_keycode(record);
+    if (preprocess_tap_dance(keycode, record)) {
+        keycode = get_record_keycode(record);
+    }
 #endif
 
     if (!(

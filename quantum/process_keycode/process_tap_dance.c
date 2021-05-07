@@ -126,7 +126,7 @@ bool preprocess_tap_dance(uint16_t keycode, keyrecord_t *record) {
             reset_tap_dance(&action->state);
         }
     }
-    return true;
+    return interrupted;
 }
 
 bool process_tap_dance(uint16_t keycode, keyrecord_t *record) {
